@@ -31,7 +31,7 @@ export const store = configureStore({
     }),
 });
 
-injectStore(store); // 🔥 여기 한 줄 추가
+/* injectStore(store); // 🔥 여기 한 줄 추가 */
 
 // persistor 생성
 export const persistor = persistStore(store);
