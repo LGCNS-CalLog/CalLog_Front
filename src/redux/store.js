@@ -6,11 +6,11 @@ import { combineReducers } from "redux";
 import storage from "redux-persist/lib/storage";
 
 //slice 파일들
-//import keywordSlice from "./keyword/keywordSlice";
+import tokenSlice from "./Token/tokenSlice";
 
 // 여러 리듀서를 합치는 경우 (지금은 하나지만 확장성 고려)
 const rootReducer = combineReducers({
-  //keyword: keywordSlice,
+  token: tokenSlice,
 });
 
 // persist 설정
@@ -31,7 +31,8 @@ export const store = configureStore({
     }),
 });
 
-/* injectStore(store); // 🔥 여기 한 줄 추가 */
+
+//injectStore(store); // 🔥 여기 한 줄 추가
 
 // persistor 생성
 export const persistor = persistStore(store);
