@@ -15,7 +15,6 @@ const PageWrapper = styled.div`
   padding: 24px 16px;
   box-sizing: border-box;
 
-  min-height: calc(100vh - ${HEADER_HEIGHT});
   border-radius: 12px;
   background: linear-gradient(to bottom, #fdfdfd, #f0f4ff);
   @media (max-width: 480px) {
