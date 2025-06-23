@@ -6,30 +6,44 @@ import { useParams } from "react-router-dom";
 const theme = {
   maxWidth: "1200px",
 };
+
 const AppWrapper = styled.div`
-  /* min-height: 100vh; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding-top: ${HEADER_HEIGHT};
   margin: 0 auto;
-  @media (min-width: 768px) {
-    max-width: 720px;
-  }
-  @media (min-width: 1024px) {
-    max-width: 960px;
-  }
   width: 100%;
+  @media (min-width: 768px) {
+    max-width: 840px;
+  }
+
+  @media (min-width: 1024px) {
+    max-width: 1140px;
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 1280px;
+  }
 `;
 
 const LayoutContainer = styled.div`
-  position: relative;
-  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   min-height: calc(100vh - ${HEADER_HEIGHT});
   height: 100%;
+  width: 100%;
 `;
 
 const MainContent = styled.main`
-  padding: 20px; /* 콘텐츠 내부의 패딩 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
   min-height: calc(100vh - ${HEADER_HEIGHT});
   height: 100%;
+  width: 100%;
 `;
 
 const Layout = ({ children }) => {

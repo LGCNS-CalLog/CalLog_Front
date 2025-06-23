@@ -7,10 +7,12 @@ import storage from "redux-persist/lib/storage";
 
 //slice 파일들
 import tokenSlice from "./Token/tokenSlice";
+import registrationSlice from "./registration/registrationSlice";
 
 // 여러 리듀서를 합치는 경우 (지금은 하나지만 확장성 고려)
 const rootReducer = combineReducers({
   token: tokenSlice,
+  registration: registrationSlice,
 });
 
 // persist 설정
@@ -30,7 +32,6 @@ export const store = configureStore({
       serializableCheck: false, // redux-persist 관련 경고 제거
     }),
 });
-
 
 //injectStore(store); // 🔥 여기 한 줄 추가
 

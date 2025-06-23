@@ -3,29 +3,28 @@ import styled from "styled-components";
 import Login_Submit from "./Login_Btn";
 
 const FormWrapper = styled.div`
-  position: relative;
   width: 400px;
-  margin: 50px auto;
   padding: 40px;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 30px; /* 요소 간 간격 */
 `;
 
 const InputWrapper = styled.div`
-  margin-bottom: 35px;
-  position: relative;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 `;
 
 const Label = styled.label`
   position: absolute;
-  left: 10px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 16px;
@@ -40,10 +39,9 @@ const Input = styled.input`
   font-size: 16px;
   border: 2px solid ${(props) => (props.hasError ? "red" : "#ddd")};
   border-radius: 8px;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
   background-color: transparent;
   color: #333;
+  transition: border-color 0.3s ease;
 
   &:focus {
     outline: none;
@@ -60,9 +58,8 @@ const Input = styled.input`
 const ErrorMessage = styled.p`
   color: red;
   font-size: 12px;
-  position: absolute;
-  bottom: -30px;
-  left: 10px;
+  margin-top: 6px;
+  margin-left: 4px;
 `;
 
 const Login_Form = () => {
@@ -83,7 +80,6 @@ const Login_Form = () => {
       [id]: value,
     }));
 
-    // 실시간 에러 초기화
     setErrors((prev) => ({
       ...prev,
       [id]: "",
@@ -110,7 +106,7 @@ const Login_Form = () => {
 
     if (isValid) {
       console.log("로그인 요청:", userData);
-      // 로그인 로직 실행 가능
+      // 로그인 API 호출 등 로직 추가 가능
     }
   };
 
@@ -123,7 +119,8 @@ const Login_Form = () => {
           value={userData.username}
           onChange={handleChange}
           required
-          hasError={!!errors.username}
+          hasError={errors.username}
+          placeholder=" " // Label이 위로 올라가도록 설정
         />
         <Label htmlFor="username">아이디</Label>
         {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
@@ -136,7 +133,8 @@ const Login_Form = () => {
           value={userData.password}
           onChange={handleChange}
           required
-          hasError={!!errors.password}
+          hasError={errors.password}
+          placeholder=" "
         />
         <Label htmlFor="password">비밀번호</Label>
         {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
