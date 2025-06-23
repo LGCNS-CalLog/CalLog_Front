@@ -11,6 +11,8 @@ import {
   faHeart as faRegularHeart,
 } from "@fortawesome/free-solid-svg-icons"; // faHeart (빈 하트) 가져오기
 
+import { faUtensils } from "@fortawesome/free-solid-svg-icons"; // 🍽️ 음식 아이콘
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../Modal/Modal";
 import { useSelector } from "react-redux";
@@ -229,15 +231,9 @@ const FoodInfoCard = ({ foodItem }) => {
           <ThumbnailIcon>
             {/* 조건에 따라 다른 아이콘 표시 */}
             {isScrapped ? (
-              <FontAwesomeIcon
-                icon={faSolidHeart}
-                style={{ color: "#e74c3c" }}
-              /> // 채운 하트
+              <FontAwesomeIcon icon={faUtensils} style={{ color: "#5a6fd8" }} />
             ) : (
-              <FontAwesomeIcon
-                icon={faRegularHeart}
-                style={{ color: "#888" }}
-              /> // 빈 하트
+              <FontAwesomeIcon icon={faUtensils} style={{ color: "#888888" }} />
             )}
           </ThumbnailIcon>
         </ThumbnailWrapper>
