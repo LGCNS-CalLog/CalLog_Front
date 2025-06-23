@@ -47,13 +47,13 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #4caf50;
+    border-color: #87c8ce;
   }
 
   &:focus + ${Label}, &:valid + ${Label} {
     top: -10px;
     font-size: 12px;
-    color: #4caf50;
+    color: #87c8ce;
   }
 `;
 

@@ -245,7 +245,7 @@ const Header = () => {
                   </DropdownItem>
                   <DropdownItem
                     onClick={() => {
-                      onNavigate("/scrap");
+                      onNavigate("/logout");
                       setIsDropdownOpen(false);
                     }}
                   >

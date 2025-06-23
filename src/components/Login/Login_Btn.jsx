@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const SubmitButton = styled.button`
-  background-color: #4caf50;
+  background-color: #87c8ce;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -13,12 +13,12 @@ const SubmitButton = styled.button`
   transition: background-color 0.3s ease, transform 0.3s ease;
 
   &:hover {
-    background-color: #45a049;
+    background-color: #87c8ce;
     transform: scale(1.05);
   }
 
   &:active {
-    background-color: #388e3c;
+    background-color: #87c8ce;
   }
 `;
 
