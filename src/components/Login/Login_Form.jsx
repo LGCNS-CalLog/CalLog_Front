@@ -15,6 +15,13 @@ const FormWrapper = styled.div`
   gap: 30px; /* 요소 간 간격 */
 `;
 
+const Title = styled.h2`
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+`;
+
 const InputWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -45,13 +52,13 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #87c8ce;
+    border-color: #94bcc0;
   }
 
   &:focus + ${Label}, &:valid + ${Label} {
     top: -10px;
     font-size: 12px;
-    color: #87c8ce;
+    color: #94bcc0;
   }
 `;
 
@@ -112,6 +119,7 @@ const Login_Form = () => {
 
   return (
     <FormWrapper>
+      <Title>로그인</Title> {/* 로그인 제목 추가 */}
       <InputWrapper>
         <Input
           type="text"
@@ -125,7 +133,6 @@ const Login_Form = () => {
         <Label htmlFor="username">아이디</Label>
         {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
       </InputWrapper>
-
       <InputWrapper>
         <Input
           type="password"
@@ -139,7 +146,6 @@ const Login_Form = () => {
         <Label htmlFor="password">비밀번호</Label>
         {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
       </InputWrapper>
-
       <Login_Submit onClick={handleSubmit} />
     </FormWrapper>
   );
