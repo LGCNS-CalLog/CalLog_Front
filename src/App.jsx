@@ -17,7 +17,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/Login" element={<LoginPage />} />
             <Route path="/registration" element={<RegistrationPage />} />
-            <Route path="/day/diet" element={<Day_Diet_page />} />
+            <Route path="/day/diet/:date" element={<Day_Diet_page />} />
             <Route path="/diet" element={<DietPage />} />
           </Routes>
         </Layout>
