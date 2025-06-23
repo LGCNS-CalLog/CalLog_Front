@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useParams, useNavigate } from "react-router-dom";
 import MealInputBox from "../../components/Day_Diet/MealInputBox";
 import DayDietHeader from "../../components/Day_Diet/DayDieteHeader";
 import { HEADER_HEIGHT } from "../../components/Header/Header";
@@ -26,7 +27,7 @@ const DayDietPage = () => {
   // 예시 데이터
   const currentCalories = 1450;
   const targetCalories = 2000;
-
+  const { date } = useParams(); // ex: 2025-06-21
   const nutritionData = [
     { nutrient: "탄수화물", value: 60 },
     { nutrient: "단백질", value: 70 },
@@ -37,7 +38,7 @@ const DayDietPage = () => {
 
   return (
     <PageWrapper>
-      <DayDietHeader />
+      <DayDietHeader currentDate={date} />
       <MealInputBox />
       <ChartSection
         current={currentCalories}

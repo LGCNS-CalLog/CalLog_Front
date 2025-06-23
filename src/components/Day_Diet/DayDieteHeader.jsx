@@ -1,5 +1,7 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import dayjs from "dayjs";
 
 const HeaderWrapper = styled.div`
   width: 100%;
@@ -50,24 +52,28 @@ const DateBox = styled.div`
   }
 `;
 
-const DayDietHeader = () => {
-  const date = {
-    year: "2025",
-    month: "06",
-    day: "21",
+const DayDietHeader = ({ currentDate }) => {
+  const navigate = useNavigate();
+  const current = dayjs(currentDate);
+  const goToPrevDay = () => {
+    const prev = current.subtract(1, "day").format("YYYY-MM-DD");
+    navigate(`/day/diet/${prev}`);
+  };
+
+  const goToNextDay = () => {
+    const next = current.add(1, "day").format("YYYY-MM-DD");
+    navigate(`/day/diet/${next}`);
   };
 
   return (
     <HeaderWrapper>
-      <ArrowButton>
+      <ArrowButton onClick={goToPrevDay}>
         <FaChevronLeft />
       </ArrowButton>
 
-      <DateBox>
-        {date.year}년 {date.month}월 {date.day}일
-      </DateBox>
+      <DateBox>{current.format("YYYY년 MM월 DD일")}</DateBox>
 
-      <ArrowButton>
+      <ArrowButton onClick={goToNextDay}>
         <FaChevronRight />
       </ArrowButton>
     </HeaderWrapper>
