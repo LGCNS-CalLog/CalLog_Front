@@ -16,7 +16,6 @@ const ChartContainer = styled.div`
   padding: 20px;
   background-color: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 `;
 
 const CalorieBarChart = ({ current, target }) => {
