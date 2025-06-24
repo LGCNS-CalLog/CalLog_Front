@@ -27,7 +27,7 @@ const NutritionRadarChart = ({ data }) => {
         <RadarChart data={data}>
           <PolarGrid />
           <PolarAngleAxis dataKey="nutrient" />
-          <PolarRadiusAxis angle={30} domain={[0, 100]} />
+          <PolarRadiusAxis angle={30} domain={[0, 1000]} />
           <Radar
             name="섭취량"
             dataKey="value"

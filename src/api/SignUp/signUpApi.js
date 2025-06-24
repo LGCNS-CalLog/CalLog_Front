@@ -4,6 +4,7 @@ import apiClient from "../index";
 export const SignUp = async ({
   username,
   password,
+  passwordCheck,
   nickname,
   height,
   age,
@@ -11,9 +12,10 @@ export const SignUp = async ({
   gender,
 }) => {
   try {
-    const response = await apiClient.post("/members/register", {
+    const response = await apiClient.post("/user/register", {
       username,
       password,
+      passwordCheck,
       nickname,
       height, // cm
       age, // 세
@@ -32,8 +34,10 @@ export const SignUp = async ({
       );
     }
   } catch (error) {
-    if (error.response && error.response.data && error.response.data.error) {
-      const errorMessage = error.response.data.message;
+    // 🔽 여기 수정!
+    if (error.response && error.response.data) {
+      const errorMessage =
+        error.response.data.data?.message || error.response.data.message;
       console.error("회원가입 실패:", errorMessage);
       throw new Error(errorMessage);
     } else if (error.request) {
@@ -42,9 +46,7 @@ export const SignUp = async ({
       );
     } else {
       console.error("회원가입 요청 실패:", error);
-      throw new Error(
-        "회원가입 요청에 실패했습니다. 잠시 후 다시 시도해주세요."
-      );
+      throw new Error("회원가입 요청에 실패했습니다.");
     }
   }
 };
