@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Login_Submit from "./Login_Btn";
+import { login as setToken } from "../../redux/Token/tokenSlice";
+import { login as loginApi } from "../../api/Login/loginApi";
 
 const FormWrapper = styled.div`
   width: 400px;
@@ -13,6 +17,19 @@ const FormWrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 30px; /* 요소 간 간격 */
+`;
+const RegisterButton = styled.button`
+  background-color: transparent;
+  border: none;
+  color: #94bcc0;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: -15px;
+  text-decoration: underline;
+
+  &:hover {
+    color: #649da1;
+  }
 `;
 
 const Title = styled.h2`
@@ -39,7 +56,38 @@ const Label = styled.label`
   pointer-events: none;
   transition: 0.3s ease;
 `;
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
+const ModalContent = styled.div`
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+`;
+
+const ModalButton = styled.button`
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #94bcc0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #7aa3a6;
+  }
+`;
 const Input = styled.input`
   width: 100%;
   padding: 14px 10px;
@@ -70,6 +118,9 @@ const ErrorMessage = styled.p`
 `;
 
 const Login_Form = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [userData, setUserData] = useState({
     username: "",
     password: "",
@@ -79,6 +130,17 @@ const Login_Form = () => {
     username: "",
     password: "",
   });
+
+  const [modal, setModal] = useState({
+    show: false,
+    message: "",
+    buttonText: "확인",
+    onConfirm: () => {},
+  });
+
+  const handleRegister = () => {
+    navigate("/registration");
+  };
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -92,7 +154,6 @@ const Login_Form = () => {
       [id]: "",
     }));
   };
-
   const handleSubmit = async () => {
     const newErrors = {
       username: "",
@@ -113,7 +174,26 @@ const Login_Form = () => {
 
     if (isValid) {
       console.log("로그인 요청:", userData);
-      // 로그인 API 호출 등 로직 추가 가능
+      try {
+        const result = await loginApi(userData);
+        console.log("서버 응답:", result);
+        //const { username, memberId } = result.data.data.userInfo;
+        const {
+          access: { token: accessToken },
+          refresh: { token: refreshToken },
+        } = result.data.data;
+        dispatch(setToken({ accessToken, refreshToken }));
+
+        navigate("/");
+      } catch (error) {
+        const errorMsg = error?.response?.data?.message || error.message;
+        setModal({
+          show: true,
+          message: errorMsg,
+          buttonText: "닫기",
+          onConfirm: () => setModal((prev) => ({ ...prev, show: false })),
+        });
+      }
     }
   };
 
@@ -147,6 +227,17 @@ const Login_Form = () => {
         {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
       </InputWrapper>
       <Login_Submit onClick={handleSubmit} />
+      <RegisterButton onClick={handleRegister}>회원가입</RegisterButton>
+      {modal.show && (
+        <ModalOverlay>
+          <ModalContent>
+            <p>{modal.message}</p>
+            <ModalButton onClick={modal.onConfirm}>
+              {modal.buttonText}
+            </ModalButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </FormWrapper>
   );
 };
