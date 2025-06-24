@@ -5,8 +5,10 @@ import useMobileDetect from "../../hook/useMobileDetect";
 import { useParams, useNavigate } from "react-router-dom";
 import InfiniteScrollController from "../../components/InfiniteScrollController/InfiniteScrollController";
 import MainSearchInput from "../../components/MainSearchInput/MainSearchInput";
-
+import { resetFoodInfoState } from "../../redux/foodInfo/foodInfoSlice";
 import { FoodInfoCard } from "../../components/FoodInfoCard/FoodInfoCard";
+
+import { setKeyword, clearKeyword } from "../../redux/keyword/keywordSlice";
 
 const SearchInputWrapper = styled.div`
   display: flex;
@@ -31,22 +33,38 @@ const FoodInfoPage = () => {
   const { keyword: urlKeyword } = useParams();
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.token.isAuthenticated);
-  const handleInputChange = (event) => {
-    setLocalSearchTerm(event.target.value);
-  };
   const handleSearch = (query) => {
     const trimmedQuery = query.trim();
     if (trimmedQuery) {
       navigate(`/foodInfo/${trimmedQuery}`);
     }
   };
-  const [localSearchTerm, setLocalSearchTerm] = useState(urlKeyword || "");
 
-  // 예시로 foodItem을 상태로 정의
-  const foodItem = {
-    title: "음식 이름",
-    description: "총 칼로리: 10kcal, 단백질: 10g, 지방: 10g, 탄수화물: 10g",
+  // Effect 1: urlKeyword 변경에 따른 Redux 상태 동기화 및 UI 업데이트
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (urlKeyword) {
+      dispatch(resetFoodInfoState());
+      dispatch(setKeyword(urlKeyword));
+      setLocalSearchTerm(urlKeyword);
+    } else {
+      dispatch(clearKeyword());
+      dispatch(resetFoodInfoState());
+      setLocalSearchTerm("");
+    }
+  }, [dispatch, urlKeyword]);
+
+  // Effect 2: 컴포넌트 언마운트 시 전역 키워드 정리
+  useEffect(() => {
+    return () => {
+      dispatch(clearKeyword());
+    };
+  }, [dispatch]);
+  const handleInputChange = (event) => {
+    setLocalSearchTerm(event.target.value);
   };
+
+  const [localSearchTerm, setLocalSearchTerm] = useState(urlKeyword || "");
 
   return (
     <>
@@ -59,10 +77,6 @@ const FoodInfoPage = () => {
             placeholder="음식을 검색하세요"
           />
         </SearchInputWrapper>
-
-        <FoodInfoCard foodItem={foodItem} />
-        <FoodInfoCard foodItem={foodItem} />
-        <FoodInfoCard foodItem={foodItem} />
 
         <InfiniteScrollController />
       </ViewNewsPageWrapper>

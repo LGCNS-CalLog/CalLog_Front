@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   username: "",
+  userid: "",
   height: "",
   weight: "",
   gender: "",
@@ -13,12 +14,14 @@ const authSlicecopy = createSlice({
   reducers: {
     login: (state, action) => {
       state.username = action.payload.username;
+      state.userid = action.payload.userid;
       state.height = action.payload.height;
       state.weight = action.payload.weight;
       state.gender = action.payload.gender;
     },
     logout: (state) => {
       state.username = "";
+      state.userid = "";
       state.height = "";
       state.weight = "";
       state.gender = "";
