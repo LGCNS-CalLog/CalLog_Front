@@ -6,12 +6,7 @@ import {
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons"; // 스크랩 아이콘
 
-import {
-  faHeart as faSolidHeart,
-  faHeart as faRegularHeart,
-} from "@fortawesome/free-solid-svg-icons"; // faHeart (빈 하트) 가져오기
-
-import { faUtensils } from "@fortawesome/free-solid-svg-icons"; // 🍽️ 음식 아이콘
+import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../Modal/Modal";
@@ -45,13 +40,10 @@ const ThumbnailWrapper = styled.div`
   align-items: center;
   overflow: hidden; // 이미지가 래퍼를 벗어나지 않도록
   padding: 30px;
-  width: 100%; // 모바일에서는 전체 너비
-  height: 200px; // 모바일 이미지 높이
 
   @media (min-width: 768px) {
     width: 280px;
     min-width: 280px;
-    height: 100%;
   }
 `;
 
@@ -156,8 +148,9 @@ const ErrorBanner = styled.div`
 `;
 
 const FoodInfoCard = ({ foodItem }) => {
-  const { title, description, scraped, scrap, createdAt } = foodItem;
-  const [isScrapped, setIsScrapped] = useState(scraped || scrap);
+  const { id, name, defaultAmount, carbohydrate, protein, fat, kcal } =
+    foodItem;
+  const [isScrapped, setIsScrapped] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({
     title: "",
@@ -222,6 +215,9 @@ const FoodInfoCard = ({ foodItem }) => {
     // 스크랩 관련 처리 예시 (API 호출 등)
   };
 
+  const title = foodItem.name || "음식 이름";
+  const description = `열량: ${kcal}kcal : 탄수화물: ${carbohydrate}g / 단백질: ${protein}g / 지방: ${fat}g `;
+
   return (
     <>
       <ErrorBanner visible={errorMessage !== ""}>{errorMessage}</ErrorBanner>
@@ -229,7 +225,6 @@ const FoodInfoCard = ({ foodItem }) => {
       <CardWrapper onClick={handleCardClick} style={{ cursor: "pointer" }}>
         <ThumbnailWrapper>
           <ThumbnailIcon>
-            {/* 조건에 따라 다른 아이콘 표시 */}
             {isScrapped ? (
               <FontAwesomeIcon icon={faUtensils} style={{ color: "#5a6fd8" }} />
             ) : (

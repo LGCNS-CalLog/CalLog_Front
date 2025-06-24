@@ -32,8 +32,8 @@ const tokenSlicecopy = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
+      state.accessToken = action.payload.token;
+      state.refreshToken = action.payload.token;
       state.isExpired = false;
       state.isAuthenticated = true;
       state.isBanned = false;

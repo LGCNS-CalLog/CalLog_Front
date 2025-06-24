@@ -1,10 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import styled from "styled-components";
-
 import { FoodInfoCard } from "../FoodInfoCard/FoodInfoCard";
 import FoodInfoCardSkeleton from "../FoodInfoCardSkeleton/FoodInfoCardSkeleton";
 import { useSelector, useDispatch } from "react-redux";
+
+import {
+  getfoodInfoByParam,
+  resetFoodInfoState,
+} from "../../redux/foodInfo/foodInfoSlice";
 
 const CardsContainer = styled.div`
   display: flex;
@@ -14,15 +18,15 @@ const CardsContainer = styled.div`
   margin: 0 auto;
 `;
 
-const NEWS_START_INDEX = 1;
-const NEWS_DISPLAY_INDEX = 10;
+const INFO_START_INDEX = 1;
+const INFO_DISPLAY_INDEX = 10;
 const KEYWORD_FETCH_DELAY = 1750; // 1.75초 지연
 
 const InfiniteScrollController = () => {
   const currentKeywordFromStore = useSelector(
     (state) => state.keyword.searchText
   );
-  // newsSlice의 status와 hasMore를 newsStatus, newsHasMore로 명확히 구분
+
   const {
     foodList,
     status: foodInfoStatus,
@@ -30,12 +34,12 @@ const InfiniteScrollController = () => {
   } = useSelector((state) => state.foodInfo);
   const isAuthenticated = useSelector((state) => state.token.isAuthenticated);
 
-  const [start, setStart] = useState(NEWS_START_INDEX);
+  const [start, setStart] = useState(INFO_START_INDEX);
   const dispatch = useDispatch();
   const prevKeywordRef = useRef(null);
   const keywordFetchTimeoutRef = useRef(null);
 
-  const fetchNewsData = async (isKeywordSearch = false) => {
+  const fetchFoodData = async (isKeywordSearch = false) => {
     if (!currentKeywordFromStore) {
       return;
     }
@@ -44,18 +48,18 @@ const InfiniteScrollController = () => {
       clearTimeout(keywordFetchTimeoutRef.current);
     }
 
-    const currentOffset = isKeywordSearch ? NEWS_START_INDEX : start;
+    const currentOffset = isKeywordSearch ? INFO_START_INDEX : start;
 
     try {
-      const newsAction = await dispatch(
-        getNewsByParam({
+      const infoAction = await dispatch(
+        getfoodInfoByParam({
           keyword: currentKeywordFromStore,
           offset: currentOffset,
-          limit: NEWS_DISPLAY_INDEX,
+          limit: INFO_DISPLAY_INDEX,
         })
       );
 
-      if (getNewsByParam.fulfilled.match(newsAction)) {
+      if (getfoodInfoByParam.fulfilled.match(infoAction)) {
         if (isAuthenticated) {
           keywordFetchTimeoutRef.current = setTimeout(() => {
             dispatch(getKeywordList());
@@ -63,14 +67,14 @@ const InfiniteScrollController = () => {
           }, KEYWORD_FETCH_DELAY);
         } else {
         }
-      } else if (getNewsByParam.rejected.match(newsAction)) {
+      } else if (getfoodInfoByParam.rejected.match(infoAction)) {
       }
     } catch (error) {}
 
     if (isKeywordSearch) {
-      setStart(NEWS_START_INDEX + NEWS_DISPLAY_INDEX);
+      setStart(INFO_START_INDEX + INFO_DISPLAY_INDEX);
     } else {
-      setStart((prev) => prev + NEWS_DISPLAY_INDEX);
+      setStart((prev) => prev + INFO_DISPLAY_INDEX);
     }
   };
 
@@ -79,16 +83,19 @@ const InfiniteScrollController = () => {
       currentKeywordFromStore &&
       currentKeywordFromStore !== prevKeywordRef.current
     ) {
-      dispatch(resetNewsState());
-      dispatch(resetKeywordState()); // 추천 키워드 상태 초기화
-      setStart(NEWS_START_INDEX);
-      fetchNewsData(true);
-      prevKeywordRef.current = currentKeywordFromStore;
+      if (keywordFetchTimeoutRef.current) {
+        clearTimeout(keywordFetchTimeoutRef.current);
+      }
+      keywordFetchTimeoutRef.current = setTimeout(() => {
+        dispatch(resetFoodInfoState());
+        setStart(INFO_START_INDEX);
+        fetchFoodData(true);
+        prevKeywordRef.current = currentKeywordFromStore;
+      }, KEYWORD_FETCH_DELAY);
     } else if (!currentKeywordFromStore && prevKeywordRef.current) {
-      dispatch(resetNewsState());
-      dispatch(resetKeywordState()); // 추천 키워드 상태 초기화
+      dispatch(resetFoodInfoState());
       prevKeywordRef.current = null;
-      setStart(NEWS_START_INDEX);
+      setStart(INFO_START_INDEX);
       if (keywordFetchTimeoutRef.current) {
         clearTimeout(keywordFetchTimeoutRef.current);
         keywordFetchTimeoutRef.current = null;
@@ -104,11 +111,11 @@ const InfiniteScrollController = () => {
 
   const loadMoreNews = () => {
     if (foodInfoStatus !== "loading" && foodInfoHasMore) {
-      fetchNewsData(false);
+      fetchFoodData(false);
     }
   };
 
-  // 이 컴포넌트의 로더는 뉴스 로딩에만 관여
+  // 이 컴포넌트의 로더는 로딩에만 관여
   const showNewsLoader = foodInfoStatus === "loading";
 
   return (
@@ -139,7 +146,7 @@ const InfiniteScrollController = () => {
       >
         <CardsContainer>
           {foodList.map((item, index) => (
-            <FoodInfoCard key={index} newsItem={item} />
+            <FoodInfoCard key={index} foodItem={item} />
           ))}
         </CardsContainer>
       </InfiniteScroll>
