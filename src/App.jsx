@@ -8,6 +8,7 @@ import RegistrationPage from "./pages/SignupPage/Signup_Page";
 import Day_Diet_page from "./pages/DayDietPage/Day_Diet_page";
 import DietPage from "./pages/DietPage/DietPage";
 import FoodInfoPage from "./pages/FoodInfoPage/FoodInfoPage";
+import MainPage from "./pages/MainPage/MainPage";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
             <Route path="/day/diet/:date" element={<Day_Diet_page />} />
             <Route path="/foodInfo" element={<FoodInfoPage />} />
             <Route path="/diet" element={<DietPage />} />
-            
+            <Route path="/main" element={<MainPage />} />
           </Routes>
         </Layout>
       </Router>
