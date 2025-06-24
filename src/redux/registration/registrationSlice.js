@@ -3,7 +3,7 @@ import { SignUp } from "../../api/SignUp/signUpApi";
 
 // 회원가입 비동기 작업
 export const registerUser = createAsyncThunk(
-  "registration/registerUser",
+  "회원가입",
   async (userData, { rejectWithValue }) => {
     try {
       const result = await SignUp(userData);
