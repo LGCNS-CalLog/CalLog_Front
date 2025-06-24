@@ -17,7 +17,7 @@ export const getfoodInfoByParam = createAsyncThunk(
   "foodinfo",
   async (payload, { rejectWithValue }) => {
     try {
-      const response = await apiClient.get("/foodinfo", { params: payload });
+      const response = await apiClient.get("/diet/food", { params: payload });
       if (response.data && response.data.status === "SUCCESS") {
         return response.data;
       } else {

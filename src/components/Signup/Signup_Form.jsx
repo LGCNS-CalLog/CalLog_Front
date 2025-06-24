@@ -187,7 +187,16 @@ const SignUp_Form = () => {
   };
 
   const handleSubmit = async () => {
-    setErrors({ username: "", password: "", nickname: "" });
+    setErrors({
+      username: "",
+      password: "",
+      passwordCheck: "",
+      nickname: "",
+      height: "",
+      age: "",
+      weight: "",
+      gender: "",
+    });
 
     let formIsValid = true;
     const newErrors = {};
@@ -215,7 +224,7 @@ const SignUp_Form = () => {
     }
     if (!userData.age) {
       formIsValid = false;
-      newErrors.age = "나이를 입력해주세요";
+      newErrors.age = "태어난 연도를 입력해주세요";
     }
     if (!userData.weight) {
       formIsValid = false;
@@ -317,7 +326,7 @@ const SignUp_Form = () => {
             onChange={handleChange}
             required
           />
-          <Label htmlFor="age">나이</Label>
+          <Label htmlFor="age">태어난 연도</Label>
           {errors.age && <ErrorMessage>{errors.age}</ErrorMessage>}
         </InputWrapper>
 

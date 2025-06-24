@@ -21,7 +21,7 @@ function App() {
             <Route path="/Login" element={<LoginPage />} />
             <Route path="/registration" element={<RegistrationPage />} />
             <Route path="/day/diet/:date" element={<Day_Diet_page />} />
-            <Route path="/foodInfo" element={<FoodInfoPage />} />
+            <Route path="/foodInfo/:keyword?" element={<FoodInfoPage />} />
             <Route path="/diet" element={<DietPage />} />
             <Route path="/main" element={<MainPage />} />
           </Routes>

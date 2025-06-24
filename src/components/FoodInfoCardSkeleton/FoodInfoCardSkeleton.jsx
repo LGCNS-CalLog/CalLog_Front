@@ -98,38 +98,6 @@ const SkeletonDescription = styled.div`
   }
 `;
 
-// 날짜 / 스크랩 버튼 있는 하단
-const SkeletonFooter = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 16px;
-
-  @media (min-width: 768px) {
-    margin-top: 20px;
-  }
-`;
-
-const SkeletonPublishDate = styled(SkeletonElement)`
-  width: 30%;
-  height: 0.8rem;
-
-  @media (min-width: 768px) {
-    height: 0.85rem;
-  }
-`;
-
-const SkeletonScrapButton = styled(SkeletonElement)`
-  width: 80px;
-  height: 36px;
-  border-radius: 20px;
-
-  @media (min-width: 768px) {
-    width: 100px;
-    height: 44px;
-  }
-`;
-
 const FoodInfoCardSkeleton = () => {
   return (
     <SkeletonCardWrapper>

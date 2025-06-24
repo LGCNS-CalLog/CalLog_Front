@@ -10,6 +10,8 @@ import {
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
+console.log("baseUrl", API_BASE_URL);
+
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   paramsSerializer: (params) => {
