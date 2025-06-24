@@ -20,11 +20,11 @@ const LayoutWrapper = styled.div`
 `;
 
 const LeftColumn = styled.div`
-  width: 65%;
+  width: 80%;
 `;
 
 const RightColumn = styled.div`
-  width: 35%;
+  width: 20%;
   position: sticky;
   top: 80px;
   height: fit-content;

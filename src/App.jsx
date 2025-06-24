@@ -33,16 +33,4 @@ function App() {
   );
 }
 
-{
-  /* <Router>
-      <GlobalStyle />
-      <Layout>
-
-        {/* <DietCalendar onChange={handleCalendarChange} value={calendarDate} /> 
-
-
-      </Layout>
-    </Router> */
-}
-
 export default App;
