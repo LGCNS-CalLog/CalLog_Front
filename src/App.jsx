@@ -17,13 +17,13 @@ function App() {
         <GlobalStyle />
         <Layout>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<MainPage />} />
             <Route path="/Login" element={<LoginPage />} />
             <Route path="/registration" element={<RegistrationPage />} />
             <Route path="/day/diet/:date" element={<Day_Diet_page />} />
             <Route path="/foodInfo/:keyword?" element={<FoodInfoPage />} />
             <Route path="/diet" element={<DietPage />} />
-            <Route path="/main" element={<MainPage />} />
+            
           </Routes>
         </Layout>
       </Router>
