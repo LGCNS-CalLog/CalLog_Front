@@ -9,6 +9,7 @@ import Day_Diet_page from "./pages/DayDietPage/Day_Diet_page";
 import DietPage from "./pages/DietPage/DietPage";
 import FoodInfoPage from "./pages/FoodInfoPage/FoodInfoPage";
 import MainPage from "./pages/MainPage/MainPage";
+import UserPage from "./pages/UserPage/UserPage";
 
 function App() {
   return (
@@ -18,12 +19,13 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/Login" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/registration" element={<RegistrationPage />} />
             <Route path="/day/diet/:date" element={<Day_Diet_page />} />
             <Route path="/foodInfo/:keyword?" element={<FoodInfoPage />} />
             <Route path="/diet" element={<DietPage />} />
             <Route path="/main" element={<MainPage />} />
+            <Route path="/userPage" element={<UserPage />} />
           </Routes>
         </Layout>
       </Router>
