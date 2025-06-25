@@ -5,6 +5,7 @@ import Logo from "../../assets/calog.png";
 import { useSelector, useDispatch } from "react-redux";
 import useMobileDetect from "../../hook/useMobileDetect";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { logoutUsingToken } from "../../redux/Token/tokenSlice";
 import {
   faSearch,
   faUser,
@@ -187,16 +188,20 @@ const LogoText = styled.span`
 
 // Header 컴포넌트
 const Header = () => {
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const onNavigate = (url) => {
     navigate(url);
+  };
+  const onLogout = async () => {
+    dispatch(logoutUsingToken());
+    navigate("/");
   };
   const handleLogoClick = () => {
     navigate("/"); // 로고 클릭 시 홈 페이지로 이동
   };
   const isAuthenticated = useSelector((state) => state.token.isAuthenticated);
   const dropdownRef = useRef(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(isAuthenticated); // 이 상태는 isAuthenticated로 대체 가능해 보입니다.
   const isMobile = useMobileDetect();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
@@ -224,7 +229,7 @@ const Header = () => {
         </LogoLink>
 
         <UserActionsWrapper ref={dropdownRef}>
-          {isLoggedIn ? ( // isAuthenticated를 직접 사용하는 것이 더 명확할 수 있습니다.
+          {isAuthenticated ? ( // isAuthenticated를 직접 사용하는 것이 더 명확할 수 있습니다.
             <>
               <UserButton onClick={toggleDropdown}>
                 {isMobile ? (
@@ -251,7 +256,7 @@ const Header = () => {
 
                   <DropdownItem
                     onClick={() => {
-                      onNavigate("/my-page");
+                      onNavigate("/UserPage");
                       setIsDropdownOpen(false);
                     }}
                   >

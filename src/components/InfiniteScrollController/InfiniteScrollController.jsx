@@ -10,12 +10,21 @@ import {
   resetFoodInfoState,
 } from "../../redux/foodInfo/foodInfoSlice";
 
-const CardsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+const CardsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); // 한 줄에 3개
+  gap: 1rem;
+  padding: 1rem;
   width: 100%;
-  align-items: center;
-  margin: 0 auto;
+  box-sizing: border-box;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const INFO_START_INDEX = 1;
@@ -27,6 +36,7 @@ const InfiniteScrollController = () => {
     (state) => state.keyword.searchText
   );
 
+  // newsSlice의 status와 hasMore를 newsStatus, newsHasMore로 명확히 구분
   const {
     foodList,
     status: foodInfoStatus,
@@ -125,13 +135,11 @@ const InfiniteScrollController = () => {
         next={loadMoreNews}
         hasMore={foodInfoHasMore}
         loader={
-          <CardsContainer>
-            <>
-              {[...Array(3)].map((_, index) => (
-                <FoodInfoCardSkeleton key={`news-skeleton-${index}`} />
-              ))}
-            </>
-          </CardsContainer>
+          <CardsGrid>
+            {[...Array(9)].map((_, index) => (
+              <FoodInfoCardSkeleton key={`news-skeleton-${index}`} />
+            ))}
+          </CardsGrid>
         }
         endMessage={
           foodList.length > 0 &&
@@ -144,11 +152,11 @@ const InfiniteScrollController = () => {
         }
         scrollThreshold={"70%"}
       >
-        <CardsContainer>
+        <CardsGrid>
           {foodList.map((item, index) => (
             <FoodInfoCard key={index} foodItem={item} />
           ))}
-        </CardsContainer>
+        </CardsGrid>
       </InfiniteScroll>
     </>
   );
