@@ -44,7 +44,7 @@ export const CreateOrUpdateDiet = async ({
   }
 };
 
-export const GetDietByDate = async ({ date }) => {
+export const GetDietByDate = async (date) => {
   try {
     const response = await apiClient.get("/diet/meal", {
       params: { date },
