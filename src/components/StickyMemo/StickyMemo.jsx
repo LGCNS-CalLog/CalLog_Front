@@ -84,13 +84,7 @@ const StickyMemo = () => {
     setIsModalOpen(true);
   };
 
-  const [items, setItems] = useState([
-    "닭가슴살",
-    "계란",
-    "라면",
-    "dd",
-    "sdasd",
-  ]);
+  const [items, setItems] = useState(["바나나"]);
 
   return (
     <StickyContainer>

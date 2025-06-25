@@ -199,10 +199,12 @@ const Modal = ({
   showCancelButton = true,
   icon,
   iconColor,
+  count, // props로 추가
+  setCount, // props로 추가
 }) => {
-  const [count, setCount] = useState(0); // 숫자 상태
+  // 내부 상태 삭제!
+  // const [count, setCount] = useState(0);
 
-  // 숫자 변경 함수
   const increment = () => setCount((prevCount) => prevCount + 0.5);
   const decrement = () =>
     setCount((prevCount) => (prevCount > 0 ? prevCount - 0.5 : 0));

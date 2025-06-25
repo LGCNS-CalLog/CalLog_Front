@@ -9,6 +9,7 @@ import { faUtensils } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../Modal/Modal";
 import { useSelector } from "react-redux";
+import { createMeal, updateMeal, deleteMeal } from "../../api/Meal/mealApi";
 
 const SquareCard = styled.div`
   position: relative;
@@ -58,13 +59,15 @@ const SelectedMark = styled.p`
 `;
 
 export function FoodInfoCard({ foodItem }) {
-  const { name, carbohydrate, protein, fat, kcal } = foodItem;
+  const { name, carbohydrate, protein, fat, kcal, id } = foodItem;
   const [isScrapped, setIsScrapped] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const [count, setCount] = useState(1);
 
   const isAuthenticated = useSelector((state) => state.token.isAuthenticated);
+  const mealInput = useSelector((state) => state.mealInput);
 
   const handleCardClick = () => {
     setModalContent({
@@ -81,10 +84,29 @@ export function FoodInfoCard({ foodItem }) {
     setIsModalOpen(true);
   };
 
-  const confirmScrapAction = (scrapStatus) => {
-    setIsScrapped(scrapStatus);
-    setIsModalOpen(false);
-    setErrorMessage("");
+  const confirmScrapAction = async (scrapStatus) => {
+    try {
+      if (scrapStatus) {
+        // ✅ 식사 등록
+        console.log("추가");
+
+        await createMeal({
+          date: mealInput.selectedDate, // 오늘 날짜
+          mealType: mealInput.selectedMealType,
+          foodId: mealInput.mealData,
+          amount: count,
+        });
+      } else {
+        // ✅ 식사 삭제
+        await deleteMeal(foodItem.id); // mealId는 등록 시 서버에서 받아 저장해둬야 함
+      }
+
+      setIsScrapped(scrapStatus);
+      setIsModalOpen(false);
+      setErrorMessage("");
+    } catch (err) {
+      setErrorMessage("음식 처리 중 오류가 발생했습니다.");
+    }
   };
 
   return (
@@ -107,13 +129,28 @@ export function FoodInfoCard({ foodItem }) {
 
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={async () => {
+          if (modalContent.cancelText === "수정하기") {
+            console.log("수정하기 눌림");
+            try {
+              await updateMeal({
+                id: foodItem.id,
+                amount: count,
+              });
+            } catch (err) {
+              setErrorMessage("수정 중 오류 발생");
+            }
+          }
+          setIsModalOpen(false);
+        }}
         onConfirm={modalContent.onConfirm}
         title={modalContent.title}
         confirmText={modalContent.confirmText}
         cancelText={modalContent.cancelText}
         icon={modalContent.icon}
         iconColor={modalContent.iconColor}
+        count={count}
+        setCount={setCount}
       >
         <div>{modalContent.message}</div>
       </Modal>
