@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateWeight, updateHeight } from "../../redux/auth/authSlice";
 import ReusableModal from "../../components/Signup/ReusableModal";
 import styled from "styled-components";
-
+import { updateUserInfo } from "../../api/UserInfo/userApi";
 const FormWrapper = styled.div`
   width: 50%;
   margin: 80px auto;
@@ -72,9 +72,13 @@ const UserUpdateForm = () => {
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.token.accessToken);
   const [userInfo, setUserInfo] = useState({ height: "", weight: "" });
+  const beforeInfo = useSelector((state) => state.auth);
   useEffect(() => {
-    // 저장되어있는 유저의 몸무게와 키 데이터를 받아와서 setUserInfo({})
-  }, []);
+    setUserInfo({
+      height: beforeInfo.height ?? "",
+      weight: beforeInfo.weight ?? "",
+    });
+  }, [beforeInfo.height, beforeInfo.weight]);
   const [modal, setModal] = useState({
     show: false,
     message: "",
@@ -99,13 +103,10 @@ const UserUpdateForm = () => {
     }
 
     try {
-      const updated = await updateUser(
-        {
-          height: parseInt(userInfo.height) || null,
-          weight: parseInt(userInfo.weight) || null,
-        },
-        accessToken
-      );
+      const updated = await updateUserInfo({
+        height: parseInt(userInfo.height) || null,
+        weight: parseInt(userInfo.weight) || null,
+      });
 
       // 응답에 따라 상태 반영
       if (updated.height !== null && updated.height !== undefined) {
@@ -145,7 +146,6 @@ const UserUpdateForm = () => {
             value={userInfo.height}
             onChange={handleChange}
             min={0}
-            placeholder="예: 175"
           />
         </InputWrapper>
 
@@ -158,7 +158,6 @@ const UserUpdateForm = () => {
             value={userInfo.weight}
             onChange={handleChange}
             min={0}
-            placeholder="예: 70"
           />
         </InputWrapper>
 

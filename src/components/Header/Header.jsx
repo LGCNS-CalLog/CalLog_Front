@@ -259,7 +259,7 @@ const Header = () => {
 
                   <DropdownItem
                     onClick={() => {
-                      onNavigate("/UserPage");
+                      onNavigate("/userinfo");
                       setIsDropdownOpen(false);
                     }}
                   >
