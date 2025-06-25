@@ -9,6 +9,7 @@ import Day_Diet_page from "./pages/DayDietPage/Day_Diet_page";
 import DietPage from "./pages/DietPage/DietPage";
 import FoodInfoPage from "./pages/FoodInfoPage/FoodInfoPage";
 import MainPage from "./pages/MainPage/MainPage";
+import UserUpdateForm from "./pages/UserInfoUpdatePage/UserUpdateForm";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/foodInfo/:keyword?" element={<FoodInfoPage />} />
             <Route path="/diet" element={<DietPage />} />
             <Route path="/main" element={<MainPage />} />
+            <Route path="/userinfo" element={<UserUpdateForm />} />
           </Routes>
         </Layout>
       </Router>
