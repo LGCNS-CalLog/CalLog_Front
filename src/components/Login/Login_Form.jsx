@@ -181,7 +181,7 @@ const Login_Form = () => {
         const {
           access: { token: accessToken },
           refresh: { token: refreshToken },
-        } = result.data.data;
+        } = result.data.data.tokens;
         dispatch(setToken({ accessToken, refreshToken }));
 
         navigate("/");

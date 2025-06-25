@@ -348,11 +348,11 @@ const SignUp_Form = () => {
           <GenderLabel>성별</GenderLabel>
           <GenderWrapper>
             <GenderBox
-              selected={userData.gender === "male"}
+              selected={userData.gender === "MALE"}
               onClick={() =>
                 setUserData((prev) => ({
                   ...prev,
-                  gender: "male",
+                  gender: "MALE",
                 }))
               }
             >
@@ -360,11 +360,11 @@ const SignUp_Form = () => {
             </GenderBox>
 
             <GenderBox
-              selected={userData.gender === "female"}
+              selected={userData.gender === "FEMALE"}
               onClick={() =>
                 setUserData((prev) => ({
                   ...prev,
-                  gender: "female",
+                  gender: "FEMALE",
                 }))
               }
             >
