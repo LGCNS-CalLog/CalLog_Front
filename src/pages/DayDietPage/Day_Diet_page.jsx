@@ -1,120 +1,27 @@
-import styled from "styled-components";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import MealInputBox from "../../components/Day_Diet/MealInputBox";
 import DayDietHeader from "../../components/Day_Diet/DayDieteHeader";
+import ChartSection from "../../components/Day_Diet/ChartSectionWrapper";
 import { GetDietByDate } from "../../api/DayDiet/dayDietApi";
-import ChartSection from "../../components/Day_Diet/ChartSectionWrapper"; // 📊 차트 통합 컴포넌트
+import dayjs from "dayjs";
+import styled from "styled-components";
 
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-
-  width: 100%;
-  margin: 0 auto;
   padding: 24px 16px;
+  width: 100%;
   box-sizing: border-box;
-
-  border-radius: 12px;
-  background: linear-gradient(to bottom, #fdfdfd, #f0f4ff);
-  @media (max-width: 480px) {
-    padding: 16px 12px;
-  }
 `;
-const dummyData = [
-  {
-    id: 1,
-    mealType: "BREAKFAST",
-    foodId: 12345,
-    foodName: "test1",
-    amount: 0.5,
-    carbohydrate: 42,
-    protein: 13,
-    fat: 15,
-    kcal: 66,
-  },
-  {
-    id: 2,
-    mealType: "BREAKFAST",
-    foodId: 12345,
-    foodName: "test2",
-    amount: 2,
-    carbohydrate: 76.56,
-    protein: 25,
-    fat: 18.7,
-    kcal: 514,
-  },
-  {
-    id: 5,
-    mealType: "LUNCH",
-    foodId: 12345,
-    foodName: "test3",
-    amount: 2,
-    carbohydrate: 76.56,
-    protein: 25,
-    fat: 18.7,
-    kcal: 514,
-  },
-  {
-    id: 7,
-    mealType: "LUNCH",
-    foodId: 12345,
-    foodName: "test4",
-    amount: 2,
-    carbohydrate: 76.56,
-    protein: 25,
-    fat: 18.7,
-    kcal: 514,
-  },
-  {
-    id: 9,
-    mealType: "Dinner",
-    foodId: 12345,
-    foodName: "test5",
-    amount: 2,
-    carbohydrate: 76.56,
-    protein: 25,
-    fat: 18.7,
-    kcal: 514,
-  },
-  {
-    id: 14,
-    mealType: "Dinner",
-    foodId: 12345,
-    foodName: "test6",
-    amount: 2,
-    carbohydrate: 76.56,
-    protein: 25,
-    fat: 18.7,
-    kcal: 514,
-  },
-  {
-    id: 16,
-    mealType: "Dinner",
-    foodId: 12345,
-    foodName: "test7",
-    amount: 2,
-    carbohydrate: 76.56,
-    protein: 25,
-    fat: 18.7,
-    kcal: 514,
-  },
-  {
-    id: 19,
-    mealType: "BREAKFAST",
-    foodId: 12345,
-    foodName: "test8",
-    amount: 2,
-    carbohydrate: 76.56,
-    protein: 25,
-    fat: 18.7,
-    kcal: 514,
-  },
-];
+
 const DayDietPage = () => {
-  const { date } = useParams(); // ex: 2025-06-21
+  const { date: urlDate } = useParams();
+  const [selectedDate, setSelectedDate] = useState(
+    urlDate || dayjs().format("YYYY-MM-DD")
+  );
+
   const [mealData, setMealData] = useState({
     BREAKFAST: [],
     LUNCH: [],
@@ -122,81 +29,59 @@ const DayDietPage = () => {
   });
   const [nutritionData, setNutritionData] = useState([]);
   const [currentCalories, setCurrentCalories] = useState(0);
+
   useEffect(() => {
-    const grouped = {
-      BREAKFAST: [],
-      LUNCH: [],
-      DINNER: [],
-    };
     let carb = 0,
       protein = 0,
       fat = 0,
+      sugar = 0,
+      fiber = 0,
       kcal = 0;
+    console.log("데이터 불러오기");
+    const fetchData = async () => {
+      try {
+        const mealList = await GetDietByDate(selectedDate);
+        console.log("mealList", mealList);
+        const grouped = { BREAKFAST: [], LUNCH: [], DINNER: [] };
 
-    dummyData.forEach((item) => {
-      const type = item.mealType.toUpperCase();
-      grouped[type].push(item);
-      carb += item.carbohydrate;
-      protein += item.protein;
-      fat += item.fat;
-      kcal += item.kcal;
-    });
+        mealList.forEach((item) => {
+          const type = item.mealType.toUpperCase();
+          grouped[type].push(item);
+          carb += item.carbohydrate ?? 0;
+          protein += item.protein ?? 0;
+          fat += item.fat ?? 0;
+          sugar += item.sugar ?? 0;
+          fiber += item.fiber ?? 0;
+          kcal += item.kcal ?? 0;
+        });
 
-    setMealData(grouped);
-    setCurrentCalories(kcal);
-    setNutritionData([
-      { nutrient: "탄수화물", value: carb },
-      { nutrient: "단백질", value: protein },
-      { nutrient: "지방", value: fat },
-    ]);
-  }, [date]);
+        setMealData(grouped);
+        setCurrentCalories(kcal);
+        setNutritionData([
+          { nutrient: "탄수화물", value: carb },
+          { nutrient: "단백질", value: protein },
+          { nutrient: "지방", value: fat },
+          { nutrient: "식이섬유", value: fiber },
+          { nutrient: "당류", value: sugar },
+        ]);
+      } catch (err) {
+        console.error("식단 데이터를 불러오지 못했습니다:", err);
+      }
+    };
 
-  const grouped = {
-    BREAKFAST: [],
-    LUNCH: [],
-    DINNER: [],
-  };
-  dummyData.forEach((item) => {
-    grouped[item.mealType]?.push(item);
-  });
-  const targetCalories = 2000;
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await GetDietByDate({ date });
-  //       const grouped = {
-  //         BREAKFAST: [],
-  //         LUNCH: [],
-  //         DINNER: [],
-  //       };
-  //       response.data.forEach((item) => {
-  //         grouped[item.mealType]?.push(item);
-  //       });
-  //       setMealData(grouped);
-  //     } catch (e) {
-  //       console.error("식단 불러오기 실패:", e.message);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-  // const currentCalories = 1450;
-  // const targetCalories = 2000;
-
-  // const nutritionData = [
-  //   { nutrient: "탄수화물", value: 60 },
-  //   { nutrient: "단백질", value: 70 },
-  //   { nutrient: "지방", value: 50 },
-  //   { nutrient: "식이섬유", value: 40 },
-  //   { nutrient: "당류", value: 30 },
-  // ];
+    fetchData();
+  }, [selectedDate]);
 
   return (
     <PageWrapper>
-      <DayDietHeader currentDate={date} />
-      <MealInputBox currentDate={date} mealData={mealData} />
+      <DayDietHeader
+        currentDate={selectedDate}
+        onChangeDate={setSelectedDate}
+      />
+      <MealInputBox currentDate={selectedDate} mealData={mealData} />
       <ChartSection
         current={currentCalories}
-        target={targetCalories}
+        target={2000}
         nutritionData={nutritionData}
       />
     </PageWrapper>
