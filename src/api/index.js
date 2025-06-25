@@ -10,8 +10,6 @@ import {
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-console.log("baseUrl", API_BASE_URL);
-
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   paramsSerializer: (params) => {
@@ -31,15 +29,13 @@ export const injectStore = (_store) => {
 // --- 요청 인터셉터 ---
 apiClient.interceptors.request.use(
   (config) => {
-    const accessToken = storeRef?.getState().token.accessToken; // 스토어에서 직접 accessToken 가져오기
+    const accessToken = storeRef?.getState().token.accessToken;
     if (accessToken) {
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 let isRefreshing = false;
@@ -67,23 +63,23 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     const currentRefreshToken = storeRef?.getState().token.refreshToken;
-    console.log(error.response, "관리자에 의해 삭제처리된 계정입니다");
 
     if (
-      error.response.status === 401 &&
+      error.response?.status === 401 &&
       error.response.data?.message === "관리자에 의해 삭제처리된 계정입니다."
     ) {
       storeRef?.dispatch(triggerBan());
       window.location.href = "/banned-user-page";
+      return Promise.reject(error);
     }
 
     if (
-      error.response.status === 503 &&
+      error.response?.status === 503 &&
       error.response.data?.message === "현재 서버 점검 중입니다."
     ) {
-      console.log("haha");
       storeRef?.dispatch(maintenance());
       window.location.href = "/maintenance-page";
+      return Promise.reject(error);
     }
 
     if (
@@ -92,10 +88,6 @@ apiClient.interceptors.response.use(
       originalRequest.url !== "/members/refresh"
     ) {
       if (error.response.data?.message === "로그아웃된 토큰입니다.") {
-        console.warn(
-          "Token invalid, performing logout:",
-          error.response.data.message
-        );
         handleLogoutForInterceptor();
         return Promise.reject(
           new Error(
@@ -114,9 +106,7 @@ apiClient.interceptors.response.use(
             ] = `Bearer ${newAccessToken}`;
             return apiClient(originalRequest);
           })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
+          .catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
@@ -134,38 +124,39 @@ apiClient.interceptors.response.use(
       try {
         console.log("Attempting to refresh token...");
         const refreshResponse = await axios.post(
-          `${API_BASE_URL}/members/refresh`,
-          { refreshToken: currentRefreshToken }, // 스토어에서 가져온 refreshToken 사용
+          `${API_BASE_URL}/user/refresh`,
+          { refreshToken: currentRefreshToken },
           { headers: { "Content-Type": "application/json" } }
         );
 
         const responseData = refreshResponse.data;
 
-        if (responseData && responseData.accessToken) {
-          const newAccessToken = responseData.accessToken;
+        if (responseData?.code === "OK" && responseData.data?.access?.token) {
+          const newAccessToken = responseData.data.access.token;
           console.log("New access token obtained:", newAccessToken);
-          // 스토어의 dispatch 사용
+
+          // accessToken만 업데이트, refreshToken은 그대로 유지
           storeRef?.dispatch(
             login({
               accessToken: newAccessToken,
               refreshToken: currentRefreshToken,
-            }) // refreshToken도 함께 업데이트하거나, 기존 값 유지
+            })
           );
+
           apiClient.defaults.headers.common[
             "Authorization"
           ] = `Bearer ${newAccessToken}`;
           originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
 
           processQueue(null, newAccessToken);
+
           return apiClient(originalRequest);
         } else {
           console.error(
             "New access token not found in refresh response:",
             responseData
           );
-          throw new Error(
-            "New access token not found or invalid response from refresh API."
-          );
+          throw new Error("New access token not found or invalid response.");
         }
       } catch (refreshError) {
         console.error(

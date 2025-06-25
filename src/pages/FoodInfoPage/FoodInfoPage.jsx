@@ -86,15 +86,15 @@ const FoodInfoPage = () => {
   };
 
   const [localSearchTerm, setLocalSearchTerm] = useState(urlKeyword || "");
-  const sampleFood = {
-    id: 1,
-    name: "닭가슴살",
-    defaultAmount: 100,
-    carbohydrate: 0,
-    protein: 23,
-    fat: 1.5,
-    kcal: 110,
-  };
+  // const sampleFood = {
+  //   id: 1,
+  //   name: "닭가슴살",
+  //   defaultAmount: 100,
+  //   carbohydrate: 0,
+  //   protein: 23,
+  //   fat: 1.5,
+  //   kcal: 110,
+  // };
 
   return (
     <ViewNewsPageWrapper>
@@ -108,7 +108,6 @@ const FoodInfoPage = () => {
               placeholder="음식을 검색하세요"
             />
           </SearchInputWrapper>
-          <FoodInfoCard foodItem={sampleFood} />
           <InfiniteScrollController />
         </LeftColumn>
 

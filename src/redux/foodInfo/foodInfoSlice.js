@@ -1,71 +1,70 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import apiClient from "../../api/index";
-const accessToken = localStorage.getItem("accessToken");
-const refreshToken = localStorage.getItem("refreshToken");
 
 const initialState = {
-  accessToken: accessToken,
-  refreshToken: refreshToken,
-  status: "idle",
+  status: "idle", // idle | loading | succeeded | failed
   error: null,
   foodList: [],
   totalCount: 0,
   hasMore: true,
 };
 
-export const getfoodInfoByParam = createAsyncThunk(
-  "foodinfo",
-  async (payload, { rejectWithValue }) => {
+// 비동기 thunk 함수
+export const fetchFoodInfo = createAsyncThunk(
+  "foodInfo/fetch",
+  async (payload, { rejectWithValue, getState }) => {
     try {
-      const response = await apiClient.get("/diet/food", { params: payload });
-      if (response.data && response.data.status === "SUCCESS") {
-        return response.data;
+      const state = getState();
+      const accessToken = state.token.accessToken;
+      const response = await apiClient.get("/diet/food", {
+        params: payload,
+      });
+
+      console.log(response.data);
+      if (response.data && response.data.code === "OK") {
+        return response.data.data;
       } else {
         throw new Error(response.data.message || "음식 검색에 실패했습니다");
       }
     } catch (error) {
       const errorMessage =
-        error.response?.data?.message || error.message || "Login Failed";
+        error.response?.data?.message || error.message || "음식 검색 실패";
       return rejectWithValue(errorMessage);
     }
   }
 );
 
 const foodInfoSlice = createSlice({
-  name: "foodinfo",
+  name: "foodInfo",
   initialState,
   reducers: {
     resetFoodInfoState: (state) => {
-      state.status = initialState.status;
-      state.error = initialState.error;
-      state.foodList = initialState.foodList; // 빈 배열로 설정됨
-      state.totalCount = initialState.totalCount; // 0으로 설정됨
-      state.hasMore = initialState.hasMore; // true로 설정됨
+      state.status = "idle";
+      state.error = null;
+      state.foodList = [];
+      state.totalCount = 0;
+      state.hasMore = true;
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getfoodInfoByParam.pending, (state) => {
+      .addCase(fetchFoodInfo.pending, (state) => {
         state.status = "loading";
         state.error = null;
       })
-      .addCase(getfoodInfoByParam.fulfilled, (state, action) => {
+      .addCase(fetchFoodInfo.fulfilled, (state, action) => {
         state.status = "succeeded";
+        const { foodList, totalCount } = action.payload;
+        state.foodList = [...state.foodList, ...foodList];
 
-        const responseItem = action.payload.data;
-
-        state.foodList = [...state.foodList, ...responseItem.items]; // 수정된 아이템 리스트를 기존 리스트에 병합합니다.
-
-        if (responseItem.total > state.foodList.length) {
-          state.hasMore = true;
-        } else {
-          state.hasMore = false;
-        }
-        state.totalCount = responseItem.total;
+        state.totalCount = totalCount;
+        state.hasMore = totalCount > state.foodList.length;
         state.error = null;
       })
-      .addCase(getfoodInfoByParam.rejected, (state, action) => {
+      .addCase(fetchFoodInfo.rejected, (state, action) => {
         state.status = "failed";
+        state.error =
+          action.payload || "음식 정보를 불러오는 중 오류가 발생했습니다.";
       });
   },
 });
