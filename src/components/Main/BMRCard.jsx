@@ -46,10 +46,10 @@ const ActivitySelection = styled.div`
   margin-bottom: 25px;
 `;
 
-const RadioLabel = styled.label`
+const ActivityButton = styled.button`
   display: flex;
   align-items: center;
-  justify-content: space-between; /* 텍스트와 칼로리 숫자를 양쪽으로 정렬 */
+  justify-content: center;
   background-color: #F8F8F8;
   padding: 12px 20px;
   border-radius: 8px;
@@ -58,55 +58,19 @@ const RadioLabel = styled.label`
   transition: all 0.2s ease;
   font-size: 1rem;
   color: #555555;
+  width: 100%;
+  box-sizing: border-box;
 
   &:hover {
     background-color: #EEEEEE;
   }
 
-  input[type="radio"] {
-    display: none; /* 기본 라디오 버튼 숨기기 */
-  }
-
-  input[type="radio"]:checked + & { /* 가상 요소로 커스텀 체크박스 */
-    background-color: #94bcc0; /* 선택 시 배경색 */
-    border-color: #94bcc0;
-    color: #ffffff;
-
-    span:first-of-type {
-        color: #ffffff; /* 텍스트 색상도 변경 */
-    }
-    span:last-of-type {
-        color: #ffffff; /* 칼로리 숫자 색상도 변경 */
-        font-weight: 700;
-    }
-  }
-
-  /* 커스텀 라디오 버튼 스타일 */
-  &::before {
-    content: '';
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #BBBBBB;
-    border-radius: 50%;
-    margin-right: 10px;
-    background-color: #FFFFFF;
-    transition: all 0.2s ease;
-    flex-shrink: 0; /* 텍스트가 길어져도 크기 유지 */
-  }
-
-  input[type="radio"]:checked + &::before {
-    border-color: #ffffff; /* 체크 시 테두리 색상 */
-    background-color: #94bcc0; /* 체크 시 내부 색상 */
-    box-shadow: inset 0 0 0 5px #ffffff; /* 내부 원형 효과 */
-  }
-
-  span:last-of-type { /* 칼로리 숫자 스타일 */
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: #333;
+  &.selected {
+    border: 2px solid #FF4D4D; /* 선택 시 빨간색 테두리 */
+    background-color: #FFF0F0; /* 선택 시 배경색 살짝 변경 */
   }
 `;
+
 
 const ResultCalories = styled.p`
   font-size: 2rem;
@@ -185,8 +149,8 @@ const BMRCard = () => {
     }
   }, [basalMetabolicRate, selectedActivity, activityFactors]); // BMR 또는 활동량 변경 시 재계산
 
-  const handleActivityChange = (e) => {
-    setSelectedActivity(e.target.value);
+  const handleActivityChange = (activityType) => {
+    setSelectedActivity(activityType);
   };
 
   // BMR이 계산 불가능한 경우 (정보 부족 등) 메시지 표시
@@ -201,45 +165,30 @@ const BMRCard = () => {
           <BmrLabel>생존에 필요한 최소 에너지량</BmrLabel>
 
           <ActivitySelection>
-            <RadioLabel>
-              <input
-                type="radio"
-                name="activity"
-                value="light"
-                checked={selectedActivity === 'light'}
-                onChange={handleActivityChange}
-                disabled={!isBMRCalculable} // BMR 계산 불가 시 비활성화
-              />
+            <ActivityButton
+              onClick={() => handleActivityChange('light')}
+              className={selectedActivity === 'light' ? 'selected' : ''}
+              disabled={!isBMRCalculable}
+            >
               <span>가벼운 활동</span>
-            </RadioLabel>
-            <RadioLabel>
-              <input
-                type="radio"
-                name="activity"
-                value="moderate"
-                checked={selectedActivity === 'moderate'}
-                onChange={handleActivityChange}
-                disabled={!isBMRCalculable} // BMR 계산 불가 시 비활성화
-              />
+            </ActivityButton>
+            <ActivityButton
+              onClick={() => handleActivityChange('moderate')}
+              className={selectedActivity === 'moderate' ? 'selected' : ''}
+              disabled={!isBMRCalculable}
+            >
               <span>보통 활동</span>
-            </RadioLabel>
-            <RadioLabel>
-              <input
-                type="radio"
-                name="activity"
-                value="heavy"
-                checked={selectedActivity === 'heavy'}
-                onChange={handleActivityChange}
-                disabled={!isBMRCalculable} // BMR 계산 불가 시 비활성화
-              />
+            </ActivityButton>
+            <ActivityButton
+              onClick={() => handleActivityChange('heavy')}
+              className={selectedActivity === 'heavy' ? 'selected' : ''}
+              disabled={!isBMRCalculable}
+            >
               <span>강한 활동</span>
-            </RadioLabel>
+            </ActivityButton>
           </ActivitySelection>
 
           <ResultCalories>
-            {selectedActivity === 'light'}
-            {selectedActivity === 'moderate'}
-            {selectedActivity === 'heavy'}
             {recommendedCalories} kcal
           </ResultCalories>
         </>

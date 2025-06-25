@@ -109,13 +109,14 @@ const SpectrumLabels = styled.div`
   width: 100%;
   font-size: 0.9rem;
   color: #777;
+  margin-top: 10px;
 `;
 
 const BmiComment = styled.p`
   font-size: 1rem;
   color: #555;
   line-height: 1.5;
-  margin-top: 10px;
+  margin-top: 50px;
 `;
 
 const InfoMissingText = styled.p`
