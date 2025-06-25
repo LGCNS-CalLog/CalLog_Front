@@ -10,6 +10,27 @@ import { FoodInfoCard } from "../../components/FoodInfoCard/FoodInfoCard";
 
 import { setKeyword, clearKeyword } from "../../redux/keyword/keywordSlice";
 
+import StickyMemo from "../../components/StickyMemo/StickyMemo";
+
+const LayoutWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  padding: 0 20px;
+`;
+
+const LeftColumn = styled.div`
+  width: 80%;
+`;
+
+const RightColumn = styled.div`
+  width: 20%;
+  position: sticky;
+  top: 80px;
+  height: fit-content;
+  align-self: flex-start;
+`;
+
 const SearchInputWrapper = styled.div`
   display: flex;
   justify-content: center; /* 가로 중앙 정렬 */
@@ -65,22 +86,37 @@ const FoodInfoPage = () => {
   };
 
   const [localSearchTerm, setLocalSearchTerm] = useState(urlKeyword || "");
+  const sampleFood = {
+    id: 1,
+    name: "닭가슴살",
+    defaultAmount: 100,
+    carbohydrate: 0,
+    protein: 23,
+    fat: 1.5,
+    kcal: 110,
+  };
 
   return (
-    <>
-      <ViewNewsPageWrapper>
-        <SearchInputWrapper>
-          <MainSearchInput
-            value={localSearchTerm}
-            onChange={handleInputChange}
-            onSearch={handleSearch}
-            placeholder="음식을 검색하세요"
-          />
-        </SearchInputWrapper>
+    <ViewNewsPageWrapper>
+      <LayoutWrapper>
+        <LeftColumn>
+          <SearchInputWrapper>
+            <MainSearchInput
+              value={localSearchTerm}
+              onChange={handleInputChange}
+              onSearch={handleSearch}
+              placeholder="음식을 검색하세요"
+            />
+          </SearchInputWrapper>
+          <FoodInfoCard foodItem={sampleFood} />
+          <InfiniteScrollController />
+        </LeftColumn>
 
-        <InfiniteScrollController />
-      </ViewNewsPageWrapper>
-    </>
+        <RightColumn>
+          <StickyMemo />
+        </RightColumn>
+      </LayoutWrapper>
+    </ViewNewsPageWrapper>
   );
 };
 

@@ -11,7 +11,6 @@ const shimmer = keyframes`
   }
 `;
 
-// 공통 스켈레톤 스타일
 const SkeletonElement = styled.div`
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 2000px 100%;
@@ -19,104 +18,51 @@ const SkeletonElement = styled.div`
   border-radius: 4px;
 `;
 
-// 카드 래퍼
-const SkeletonCardWrapper = styled.div`
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+// 정사각형 카드 스타일
+const SquareSkeletonCard = styled.div`
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  width: 100%;
-  margin-top: 20px;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-  }
+  align-items: center;
+  justify-content: center;
 `;
 
-// 썸네일 영역
-const SkeletonThumbnailWrapper = styled(SkeletonElement)`
-  width: 100%;
-  height: 200px;
-  border-radius: 16px 16px 0 0;
-
-  @media (min-width: 768px) {
-    width: 280px;
-    min-width: 280px;
-    height: 100%;
-    border-radius: 16px 0 0 16px;
-  }
+// 아이콘 영역
+const SkeletonIcon = styled(SkeletonElement)`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-bottom: 0.75rem;
 `;
 
-// 본문 영역
-const SkeletonContentArea = styled.div`
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
-  box-sizing: border-box;
-  overflow: hidden;
-
-  @media (min-width: 768px) {
-    padding: 28px;
-  }
-`;
-
-// 제목 스켈레톤
+// 제목
 const SkeletonTitle = styled(SkeletonElement)`
+  width: 60%;
+  height: 1rem;
+  margin-bottom: 0.5rem;
+`;
+
+// 설명 텍스트
+const SkeletonText = styled(SkeletonElement)`
   width: 80%;
-  height: 1.4rem;
-  margin-bottom: 12px;
-
-  @media (min-width: 768px) {
-    height: 1.6rem;
-    margin-bottom: 16px;
-  }
-`;
-
-// 설명 스켈레톤 줄
-const SkeletonDescriptionLine = styled(SkeletonElement)`
-  height: 0.95rem;
-  margin-bottom: 8px;
-
-  @media (min-width: 768px) {
-    height: 1rem;
-  }
-`;
-
-const SkeletonDescription = styled.div`
-  .desktop-only {
-    display: none;
-  }
-
-  @media (min-width: 768px) {
-    .desktop-only {
-      display: block;
-    }
-  }
+  height: 0.75rem;
+  margin-bottom: 0.25rem;
 `;
 
 const FoodInfoCardSkeleton = () => {
   return (
-    <SkeletonCardWrapper>
-      <SkeletonThumbnailWrapper />
-      <SkeletonContentArea>
-        <div>
-          <SkeletonTitle />
-          <SkeletonDescription>
-            <SkeletonDescriptionLine style={{ width: "100%" }} />
-            <SkeletonDescriptionLine style={{ width: "90%" }} />
-            <SkeletonDescriptionLine style={{ width: "70%" }} />
-            <SkeletonDescriptionLine
-              className="desktop-only"
-              style={{ width: "60%" }}
-            />
-          </SkeletonDescription>
-        </div>
-      </SkeletonContentArea>
-    </SkeletonCardWrapper>
+    <SquareSkeletonCard>
+      <SkeletonIcon />
+      <SkeletonTitle />
+      <SkeletonText />
+      <SkeletonText style={{ width: "70%" }} />
+    </SquareSkeletonCard>
   );
 };
 

@@ -13,7 +13,7 @@ export const logoutUsingToken = createAsyncThunk(
   "token/logout",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post("/members/logout");
+      const response = await apiClient.post("/user/logout");
       if (response.data && response.status === 200) {
         return response.data;
       } else {
@@ -32,8 +32,8 @@ const tokenSlicecopy = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state.accessToken = action.payload.token;
-      state.refreshToken = action.payload.token;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
       state.isExpired = false;
       state.isAuthenticated = true;
       state.isBanned = false;
