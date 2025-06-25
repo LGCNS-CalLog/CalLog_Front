@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import useMobileDetect from "../../hook/useMobileDetect";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { logoutUsingToken } from "../../redux/Token/tokenSlice";
+import { logout } from "../../redux/auth/authSlice";
 import {
   faSearch,
   faUser,
@@ -195,6 +196,7 @@ const Header = () => {
   };
   const onLogout = async () => {
     dispatch(logoutUsingToken());
+    dispatch(logout());
     navigate("/");
   };
   const handleLogoClick = () => {
@@ -202,6 +204,7 @@ const Header = () => {
   };
   const isAuthenticated = useSelector((state) => state.token.isAuthenticated);
   const dropdownRef = useRef(null);
+  const nickname = useSelector((state) => state.auth.usernickName);
   const isMobile = useMobileDetect();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
@@ -237,8 +240,8 @@ const Header = () => {
                 ) : (
                   <>
                     <FontAwesomeIcon icon={faUser} />
-                    <span> 형균님 환영합니다</span>
-                    {/* <span> {nickname}님 환영합니다</span> */}
+
+                    <span> {nickname}님 환영합니다</span>
                   </>
                 )}
               </UserButton>
