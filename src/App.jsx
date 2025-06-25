@@ -9,7 +9,11 @@ import Day_Diet_page from "./pages/DayDietPage/Day_Diet_page";
 import DietPage from "./pages/DietPage/DietPage";
 import FoodInfoPage from "./pages/FoodInfoPage/FoodInfoPage";
 import MainPage from "./pages/MainPage/MainPage";
+<<<<<<< HEAD
 import UserUpdateForm from "./pages/UserInfoUpdatePage/UserUpdateForm";
+=======
+import UserPage from "./pages/UserPage/UserPage";
+>>>>>>> f19541ea5b7fff1dd38a3dfd97aed135f5e1b30d
 
 function App() {
   return (
@@ -19,30 +23,19 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/Login" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/registration" element={<RegistrationPage />} />
             <Route path="/day/diet/:date" element={<Day_Diet_page />} />
             <Route path="/foodInfo/:keyword?" element={<FoodInfoPage />} />
             <Route path="/diet" element={<DietPage />} />
             <Route path="/main" element={<MainPage />} />
             <Route path="/userinfo" element={<UserUpdateForm />} />
+            <Route path="/userPage" element={<UserPage />} />
           </Routes>
         </Layout>
       </Router>
     </>
   );
-}
-
-{
-  /* <Router>
-      <GlobalStyle />
-      <Layout>
-
-        {/* <DietCalendar onChange={handleCalendarChange} value={calendarDate} /> 
-
-
-      </Layout>
-    </Router> */
 }
 
 export default App;
