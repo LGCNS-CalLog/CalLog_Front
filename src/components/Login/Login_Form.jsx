@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Login_Submit from "./Login_Btn";
 import { login as setToken } from "../../redux/Token/tokenSlice";
+import { login } from "../../redux/auth/authSlice";
 import { login as loginApi } from "../../api/Login/loginApi";
 
 const FormWrapper = styled.div`
@@ -177,7 +178,15 @@ const Login_Form = () => {
       try {
         const result = await loginApi(userData);
         console.log("서버 응답:", result);
-        //const { username, memberId } = result.data.data.userInfo;
+        const { gender, height, weight } = result.data.data.userProfile;
+        const usernickName = result.data.data.nickname;
+        const birthYear = result.data.data.userProfile.age;
+
+        const currentYear = new Date().getFullYear();
+        const age = currentYear - birthYear;
+
+        dispatch(login({ usernickName, age, gender, height, weight }));
+
         const {
           access: { token: accessToken },
           refresh: { token: refreshToken },
