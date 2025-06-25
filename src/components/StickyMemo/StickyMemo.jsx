@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import Modal from "../Modal/Modal";
+import { deleteMeal, updateMeal } from "../../api/Meal/mealApi";
+import { GetDietByDate } from "../../api/DayDiet/dayDietApi";
+import { setMealInputContext } from "../../redux/mealInput/mealInputSlice";
 
 const StickyContainer = styled.div`
   position: sticky;
@@ -11,7 +15,6 @@ const StickyContainer = styled.div`
   border-radius: 16px;
   width: 280px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  height: auto; /* 내용에 따라 자동 확장 */
 `;
 
 const Title = styled.h3`
@@ -55,44 +58,70 @@ const EditButton = styled.button`
 `;
 
 const StickyMemo = () => {
+  const dispatch = useDispatch();
+  const mealInput = useSelector((state) => state.mealInput);
+  const selectedList = mealInput.mealData[mealInput.selectedMealType] || [];
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState({});
+  const [count, setCount] = useState(1);
+  const [selectedMeal, setSelectedMeal] = useState(null);
 
-  const handleEditClick = (itemName, index) => {
+  const updateReduxMealData = async () => {
+    try {
+      const updatedMealList = await GetDietByDate(mealInput.selectedDate);
+      const grouped = { BREAKFAST: [], LUNCH: [], DINNER: [] };
+      updatedMealList.forEach((item) => {
+        const type = item.mealType.toUpperCase();
+        grouped[type].push(item);
+      });
+
+      dispatch(
+        setMealInputContext({
+          date: mealInput.selectedDate,
+          mealType: mealInput.selectedMealType,
+          mealInfo: grouped[mealInput.selectedMealType],
+        })
+      );
+    } catch (err) {
+      console.error("Redux 식단 업데이트 실패", err);
+    }
+  };
+
+  const handleEditClick = (mealItem) => {
+    setSelectedMeal(mealItem);
+    setCount(mealItem.amount); // 기존 수량 세팅
+
     setModalContent({
       title: "수정하기",
-      message: `${itemName}을(를) 수정하시겠습니까?`,
+      message: `${mealItem.foodName}을(를) 수정하시겠습니까?`,
       icon: faExclamationTriangle,
       iconColor: "#f0ad4e",
-      onConfirm: () => {
-        // 🟥 제거 동작
-        const newItems = [...items];
-        newItems.splice(index, 1);
-        setItems(newItems);
-        setIsModalOpen(false);
+      onConfirm: async () => {
+        try {
+          await deleteMeal(mealItem.id);
+          await updateReduxMealData();
+          setIsModalOpen(false);
+        } catch (err) {
+          console.error("삭제 오류", err);
+        }
       },
-      onCancel: () => {
-        // 🟦 수정 버튼 클릭 시 동작
-        setEditIndex(index);
-        setEditedValue(itemName);
-        setIsModalOpen(false);
-      },
-      confirmText: "제거",
       cancelText: "수정",
+      confirmText: "제거",
     });
 
     setIsModalOpen(true);
   };
 
-  const [items, setItems] = useState(["바나나"]);
-
   return (
     <StickyContainer>
       <Title>선택 식단</Title>
       <ItemList>
-        {items.map((item, index) => (
-          <Item key={index}>
-            <span>{item}</span>
+        {selectedList.map((item) => (
+          <Item key={item.id}>
+            <span>
+              {item.foodName} (x{item.amount})
+            </span>
             <EditButton
               className="edit-button"
               onClick={() => handleEditClick(item)}
@@ -102,15 +131,31 @@ const StickyMemo = () => {
           </Item>
         ))}
       </ItemList>
+
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={async () => {
+          if (modalContent.cancelText === "수정" && selectedMeal) {
+            try {
+              await updateMeal({
+                id: selectedMeal.id,
+                amount: count,
+              });
+              await updateReduxMealData();
+            } catch (err) {
+              console.error("수정 오류", err);
+            }
+          }
+          setIsModalOpen(false);
+        }}
         onConfirm={modalContent.onConfirm}
         title={modalContent.title}
         confirmText={modalContent.confirmText}
         cancelText={modalContent.cancelText}
         icon={modalContent.icon}
         iconColor={modalContent.iconColor}
+        count={count}
+        setCount={setCount}
       >
         <div>{modalContent.message}</div>
       </Modal>
