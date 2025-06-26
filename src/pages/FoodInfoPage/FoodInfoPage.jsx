@@ -32,13 +32,29 @@ const RightColumn = styled.div`
 `;
 
 const SearchInputWrapper = styled.div`
+  flex: 1;
   display: flex;
-  justify-content: center; /* 가로 중앙 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  width: 100%;
+  justify-content: center;
+  align-items: center;
   max-width: 584px;
-  padding-bottom: 10px;
   margin: 0 auto;
+`;
+
+const BackButton = styled.button`
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #2563eb;
+  }
 `;
 
 const ViewNewsPageWrapper = styled.div`
@@ -52,6 +68,8 @@ const FoodInfoPage = () => {
   const navigate = useNavigate();
   const isMobile = useMobileDetect();
   const { keyword: urlKeyword } = useParams();
+
+  const mealInput = useSelector((state) => state.mealInput);
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.token.isAuthenticated);
   const handleSearch = (query) => {
@@ -85,19 +103,15 @@ const FoodInfoPage = () => {
     setLocalSearchTerm(event.target.value);
   };
 
+  const handleMoveToDietPage = () => {
+    navigate(`/day/diet/${mealInput.selectedDate}`);
+  };
+
   const [localSearchTerm, setLocalSearchTerm] = useState(urlKeyword || "");
-  // const sampleFood = {
-  //   id: 1,
-  //   name: "닭가슴살",
-  //   defaultAmount: 100,
-  //   carbohydrate: 0,
-  //   protein: 23,
-  //   fat: 1.5,
-  //   kcal: 110,
-  // };
 
   return (
     <ViewNewsPageWrapper>
+      <BackButton onClick={handleMoveToDietPage}>← 뒤로 가기</BackButton>
       <LayoutWrapper>
         <LeftColumn>
           <SearchInputWrapper>
