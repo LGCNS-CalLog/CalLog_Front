@@ -4,6 +4,7 @@ import { updateWeight, updateHeight } from "../../redux/auth/authSlice";
 import ReusableModal from "../../components/Signup/ReusableModal";
 import styled from "styled-components";
 import { updateUserInfo } from "../../api/UserInfo/userApi";
+import { useNavigate } from "react-router-dom";
 const FormWrapper = styled.div`
   width: 50%;
   margin: 80px auto;
@@ -73,6 +74,7 @@ const UserUpdateForm = () => {
   const accessToken = useSelector((state) => state.token.accessToken);
   const [userInfo, setUserInfo] = useState({ height: "", weight: "" });
   const beforeInfo = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   useEffect(() => {
     setUserInfo({
       height: beforeInfo.height ?? "",
@@ -120,7 +122,10 @@ const UserUpdateForm = () => {
         show: true,
         message: "정보가 성공적으로 수정되었습니다.",
         buttonText: "확인",
-        onConfirm: () => setModal((prev) => ({ ...prev, show: false })),
+        onConfirm: () => {
+          setModal((prev) => ({ ...prev, show: false }));
+          navigate("/");
+        },
       });
     } catch (err) {
       setModal({

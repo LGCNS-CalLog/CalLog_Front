@@ -6,6 +6,7 @@ import ChartSection from "../../components/Day_Diet/ChartSectionWrapper";
 import { GetDietByDate } from "../../api/DayDiet/dayDietApi";
 import dayjs from "dayjs";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -21,7 +22,9 @@ const DayDietPage = () => {
   const [selectedDate, setSelectedDate] = useState(
     urlDate || dayjs().format("YYYY-MM-DD")
   );
-
+  const authSlice = useSelector((state) => state.auth);
+  const userBmr = authSlice.bmr;
+  console.log(userBmr);
   const [mealData, setMealData] = useState({
     BREAKFAST: [],
     LUNCH: [],
@@ -81,7 +84,7 @@ const DayDietPage = () => {
       <MealInputBox currentDate={selectedDate} mealData={mealData} />
       <ChartSection
         current={currentCalories}
-        target={2000}
+        target={userBmr}
         nutritionData={nutritionData}
       />
     </PageWrapper>
