@@ -27,7 +27,7 @@ const CardsGrid = styled.div`
   }
 `;
 
-const INFO_START_INDEX = 1;
+const INFO_START_INDEX = 0;
 const INFO_DISPLAY_INDEX = 9;
 const KEYWORD_FETCH_DELAY = 1750; // 1.75초 지연
 
@@ -35,6 +35,7 @@ const InfiniteScrollController = () => {
   const currentKeywordFromStore = useSelector(
     (state) => state.keyword.searchText
   );
+
   // newsSlice의 status와 hasMore를 newsStatus, newsHasMore로 명확히 구분
   const {
     foodList,
@@ -49,16 +50,20 @@ const InfiniteScrollController = () => {
   const keywordFetchTimeoutRef = useRef(null);
 
   const fetchFoodData = async (isKeywordSearch = false) => {
-    if (!currentKeywordFromStore) {
-      return;
-    }
+    // if (!currentKeywordFromStore) {
+    //   return;
+    // }
+
+    // if (start >= totalPages) {
+    //   // 더 이상 요청하지 않음
+    //   return;
+    // }
 
     if (keywordFetchTimeoutRef.current) {
       clearTimeout(keywordFetchTimeoutRef.current);
     }
 
     const currentOffset = isKeywordSearch ? INFO_START_INDEX : start;
-
     try {
       const infoAction = await dispatch(
         fetchFoodInfo({
@@ -71,19 +76,20 @@ const InfiniteScrollController = () => {
       if (fetchFoodInfo.fulfilled.match(infoAction)) {
         if (isAuthenticated) {
           keywordFetchTimeoutRef.current = setTimeout(() => {
-            // dispatch(getKeywordList());
             keywordFetchTimeoutRef.current = null;
           }, KEYWORD_FETCH_DELAY);
         } else {
         }
       } else if (fetchFoodInfo.rejected.match(infoAction)) {
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
 
     if (isKeywordSearch) {
-      setStart(INFO_START_INDEX + INFO_DISPLAY_INDEX);
+      setStart(INFO_START_INDEX + 1); // 다음 페이지 1로
     } else {
-      setStart((prev) => prev + INFO_DISPLAY_INDEX);
+      setStart((prev) => prev + 1);
     }
   };
 
@@ -144,7 +150,7 @@ const InfiniteScrollController = () => {
             </p>
           ) : null
         }
-        scrollThreshold={"70%"}
+        scrollThreshold={"50%"}
       >
         <CardsGrid>
           {foodList.map((item, index) => (

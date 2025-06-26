@@ -15,12 +15,10 @@ export const fetchFoodInfo = createAsyncThunk(
   async (payload, { rejectWithValue, getState }) => {
     try {
       const state = getState();
-      const accessToken = state.token.accessToken;
       const response = await apiClient.get("/diet/food", {
         params: payload,
       });
 
-      console.log(response.data);
       if (response.data && response.data.code === "OK") {
         return response.data.data;
       } else {
@@ -54,10 +52,19 @@ const foodInfoSlice = createSlice({
       })
       .addCase(fetchFoodInfo.fulfilled, (state, action) => {
         state.status = "succeeded";
-        const { foodList, totalCount } = action.payload;
-        state.foodList = [...state.foodList, ...foodList];
+        console.log("payload:", action.payload);
 
-        state.totalCount = totalCount;
+        // 서버 반환에 맞게 필드명 수정
+        const { content: foodList, totalElements: totalCount } = action.payload;
+
+        // 배열인지 확인 (안전하게)
+        if (Array.isArray(foodList)) {
+          state.foodList = [...state.foodList, ...foodList];
+        } else {
+          state.foodList = [...state.foodList]; // 또는 빈 배열로 처리
+        }
+
+        state.totalCount = totalCount ?? 0;
         state.hasMore = totalCount > state.foodList.length;
         state.error = null;
       })
