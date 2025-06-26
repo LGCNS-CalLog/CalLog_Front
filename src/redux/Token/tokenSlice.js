@@ -13,7 +13,7 @@ export const logoutUsingToken = createAsyncThunk(
   "token/logout",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await apiClient.post("/members/logout");
+      const response = await apiClient.post("/user/logout");
       if (response.data && response.status === 200) {
         return response.data;
       } else {

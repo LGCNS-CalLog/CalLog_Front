@@ -1,17 +1,18 @@
-import styled from "styled-components";
+import dayjs from "dayjs";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import styled from "styled-components";
 
 const HeaderWrapper = styled.div`
-  width: 100%;
-  max-width: 960px;
-  margin: 0 auto 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 0 auto 30px;
   padding: 12px 20px;
   background-color: #f7faff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 960px;
 `;
 
 const ArrowButton = styled.button`
@@ -20,54 +21,46 @@ const ArrowButton = styled.button`
   padding: 10px;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
 
   &:hover {
     background-color: #bcd4f6;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     transform: scale(1.1);
   }
 
   svg {
-    width: 20px;
-    height: 20px;
     color: #2a2a2a;
   }
 `;
 
 const DateBox = styled.div`
-  flex: 1;
-  text-align: center;
   font-size: 1.5rem;
   font-weight: 600;
-  color: #2a2a2a;
-
-  @media (max-width: 480px) {
-    font-size: 1.2rem;
-  }
+  text-align: center;
 `;
 
-const DayDietHeader = () => {
-  const date = {
-    year: "2025",
-    month: "06",
-    day: "21",
+const DayDietHeader = ({ currentDate, onChangeDate }) => {
+  const current = dayjs(currentDate);
+
+  const goToPrevDay = () => {
+    const prevDate = current.subtract(1, "day").format("YYYY-MM-DD");
+    onChangeDate(prevDate);
+  };
+
+  const goToNextDay = () => {
+    const nextDate = current.add(1, "day").format("YYYY-MM-DD");
+    onChangeDate(nextDate);
   };
 
   return (
     <HeaderWrapper>
-      <ArrowButton>
+      <ArrowButton onClick={goToPrevDay}>
         <FaChevronLeft />
       </ArrowButton>
-
-      <DateBox>
-        {date.year}년 {date.month}월 {date.day}일
-      </DateBox>
-
-      <ArrowButton>
+      <DateBox>{current.format("YYYY년 MM월 DD일")}</DateBox>
+      <ArrowButton onClick={goToNextDay}>
         <FaChevronRight />
       </ArrowButton>
     </HeaderWrapper>

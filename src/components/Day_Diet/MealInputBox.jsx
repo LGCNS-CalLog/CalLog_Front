@@ -1,5 +1,9 @@
 import styled from "styled-components";
 import { FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setMealInputContext } from "../../redux/mealInput/mealInputSlice";
+import dayjs from "dayjs";
 
 const MealInputBoxWrapper = styled.div`
   width: 100%;
@@ -18,7 +22,7 @@ const MealBar = styled.div`
   border-radius: 16px;
   margin: 12px 0;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
   padding: 14px 16px;
 `;
@@ -32,6 +36,9 @@ const MealType = styled.div`
   font-weight: 600;
   font-size: 0.95rem;
   color: #1a3c7c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-right: 12px;
 `;
 
@@ -42,11 +49,21 @@ const MealBox = styled.div`
   background-color: #eef3fb;
   font-size: 0.9rem;
   color: #2a2a2a;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+
+  .food-summary {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const PlusBtn = styled.button`
   flex: 0 0 auto;
+  align-self: center; /* ✅ 세로 가운데 정렬 */
   margin-left: 12px;
   border: none;
   background-color: #5b9bd5;
@@ -70,32 +87,59 @@ const PlusBtn = styled.button`
   }
 `;
 
-const MealInputBox = () => {
+const getKoreanLabel = (mealType) => {
+  switch (mealType) {
+    case "BREAKFAST":
+      return "아침";
+    case "LUNCH":
+      return "점심";
+    case "DINNER":
+      return "저녁";
+    default:
+      return "간식";
+  }
+};
+
+const MealInputBox = ({ currentDate, mealData }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const formattedDate = dayjs(currentDate).format("YYYY-MM-DD");
+
+  const handlePlusClick = (mealType, mealList) => {
+    dispatch(
+      setMealInputContext({
+        date: formattedDate,
+        mealType,
+        mealInfo: mealList,
+      })
+    );
+    navigate("/foodinfo");
+  };
+
   return (
     <MealInputBoxWrapper>
-      <MealBar>
-        <MealType>아침</MealType>
-        <MealBox>사과 (100g), 우유(250ml) / 총칼로리 : 450kal</MealBox>
-        <PlusBtn>
-          <FaPlus />
-        </PlusBtn>
-      </MealBar>
+      {["BREAKFAST", "LUNCH", "DINNER"].map((type) => {
+        const mealList = mealData[type] || [];
+        const totalKcal = mealList.reduce((sum, food) => sum + food.kcal, 0);
+        const foodText = mealList
+          .map((item) => `${item.foodName} (${item.amount}인분)`)
+          .join(", ");
 
-      <MealBar>
-        <MealType>점심</MealType>
-        <MealBox>제육볶음 (150g), 제로콜라(250ml) / 총칼로리 : 1000kal</MealBox>
-        <PlusBtn>
-          <FaPlus />
-        </PlusBtn>
-      </MealBar>
-
-      <MealBar>
-        <MealType>저녁</MealType>
-        <MealBox>물 (200ml) / 총칼로리 : 0kal</MealBox>
-        <PlusBtn>
-          <FaPlus />
-        </PlusBtn>
-      </MealBar>
+        return (
+          <MealBar key={type}>
+            <MealType>{getKoreanLabel(type)}</MealType>
+            <MealBox>
+              <div className="food-summary" title={foodText}>
+                {mealList.length > 0 ? foodText : "등록된 음식이 없습니다."}
+              </div>
+              <div>총칼로리: {totalKcal}kcal</div>
+            </MealBox>
+            <PlusBtn onClick={() => handlePlusClick(type, mealList)}>
+              <FaPlus />
+            </PlusBtn>
+          </MealBar>
+        );
+      })}
     </MealInputBoxWrapper>
   );
 };

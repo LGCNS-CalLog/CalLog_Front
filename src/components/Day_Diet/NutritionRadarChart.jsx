@@ -14,7 +14,10 @@ const RadarContainer = styled.div`
   background-color: #ffffff;
   border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.09);
+    cursor: pointer;
+  }
 `;
 
 const NutritionRadarChart = ({ data }) => {

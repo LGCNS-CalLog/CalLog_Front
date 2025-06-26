@@ -1,48 +1,90 @@
-import styled from "styled-components";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import MealInputBox from "../../components/Day_Diet/MealInputBox";
 import DayDietHeader from "../../components/Day_Diet/DayDieteHeader";
-import { HEADER_HEIGHT } from "../../components/Header/Header";
-import ChartSection from "../../components/Day_Diet/ChartSectionWrapper"; // 📊 차트 통합 컴포넌트
+import ChartSection from "../../components/Day_Diet/ChartSectionWrapper";
+import { GetDietByDate } from "../../api/DayDiet/dayDietApi";
+import dayjs from "dayjs";
+import styled from "styled-components";
+import { useSelector } from "react-redux";
 
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-
-  width: 100%;
-  margin: 0 auto;
   padding: 24px 16px;
+  width: 100%;
   box-sizing: border-box;
-
-  min-height: calc(100vh - ${HEADER_HEIGHT});
-  border-radius: 12px;
-  background: linear-gradient(to bottom, #fdfdfd, #f0f4ff);
-  @media (max-width: 480px) {
-    padding: 16px 12px;
-  }
 `;
 
 const DayDietPage = () => {
-  // 예시 데이터
-  const currentCalories = 1450;
-  const targetCalories = 2000;
+  const { date: urlDate } = useParams();
+  const [selectedDate, setSelectedDate] = useState(
+    urlDate || dayjs().format("YYYY-MM-DD")
+  );
+  const authSlice = useSelector((state) => state.auth);
+  const userBmr = authSlice.bmr;
+  console.log(userBmr);
+  const [mealData, setMealData] = useState({
+    BREAKFAST: [],
+    LUNCH: [],
+    DINNER: [],
+  });
+  const [nutritionData, setNutritionData] = useState([]);
+  const [currentCalories, setCurrentCalories] = useState(0);
 
-  const nutritionData = [
-    { nutrient: "탄수화물", value: 60 },
-    { nutrient: "단백질", value: 70 },
-    { nutrient: "지방", value: 50 },
-    { nutrient: "식이섬유", value: 40 },
-    { nutrient: "당류", value: 30 },
-  ];
+  useEffect(() => {
+    let carb = 0,
+      protein = 0,
+      fat = 0,
+      sugar = 0,
+      fiber = 0,
+      kcal = 0;
+    console.log("데이터 불러오기");
+    const fetchData = async () => {
+      try {
+        const mealList = await GetDietByDate(selectedDate);
+        console.log("mealList", mealList);
+        const grouped = { BREAKFAST: [], LUNCH: [], DINNER: [] };
+
+        mealList.forEach((item) => {
+          const type = item.mealType.toUpperCase();
+          grouped[type].push(item);
+          carb += item.carbohydrate ?? 0;
+          protein += item.protein ?? 0;
+          fat += item.fat ?? 0;
+          sugar += item.sugar ?? 0;
+          fiber += item.fiber ?? 0;
+          kcal += item.kcal ?? 0;
+        });
+
+        setMealData(grouped);
+        setCurrentCalories(kcal);
+        setNutritionData([
+          { nutrient: "탄수화물", value: carb },
+          { nutrient: "단백질", value: protein },
+          { nutrient: "지방", value: fat },
+          { nutrient: "식이섬유", value: fiber },
+          { nutrient: "당류", value: sugar },
+        ]);
+      } catch (err) {
+        console.error("식단 데이터를 불러오지 못했습니다:", err);
+      }
+    };
+
+    fetchData();
+  }, [selectedDate]);
 
   return (
     <PageWrapper>
-      <DayDietHeader />
-      <MealInputBox />
+      <DayDietHeader
+        currentDate={selectedDate}
+        onChangeDate={setSelectedDate}
+      />
+      <MealInputBox currentDate={selectedDate} mealData={mealData} />
       <ChartSection
         current={currentCalories}
-        target={targetCalories}
+        target={userBmr}
         nutritionData={nutritionData}
       />
     </PageWrapper>

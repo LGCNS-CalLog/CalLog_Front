@@ -10,9 +10,9 @@ const SectionWrapper = styled.div`
   gap: 24px;
   flex-wrap: wrap;
   width: 100%;
-  max-width: 960px;
   margin: 0 auto;
   padding: 16px;
+  background-color: #f7faff;
 `;
 
 const ChartBox = styled.div`
@@ -20,7 +20,6 @@ const ChartBox = styled.div`
   height: 320px;
   background-color: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   padding: 20px;
   box-sizing: border-box;
 

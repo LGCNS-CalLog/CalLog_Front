@@ -72,11 +72,11 @@ const ModalButton = styled.button`
 `;
 
 const YesButton = styled(ModalButton)`
-  background-color: #6c5ce7; /* 선택된 날짜 색상과 유사하게 */
+  background-color: #94bcc0; /* 선택된 날짜 색상과 유사하게 */
   color: white;
 
   &:hover {
-    background-color: #5a4acb;
+    background-color:rgb(108, 159, 164);
   }
 `;
 
@@ -105,7 +105,15 @@ const DietModifyModal = ({ date, onClose, onConfirm, hasRecord }) => {
         <CloseButton onClick={onClose}>&times;</CloseButton>
         <ModalTitle>{formattedDate}</ModalTitle>
         <ModalText>
-          {hasRecord ? `해당 날짜에 이미 기록이 있습니다. 수정하시겠습니까?` : `해당 날짜에 기록이 없습니다. 새로운 기록을 추가하시겠습니까?`}
+          {hasRecord ? 
+            `해당 날짜에 이미 기록이 있습니다.` : 
+            `해당 날짜에 기록이 없습니다.`
+          }
+          <br />
+          {hasRecord ? 
+            `수정하시겠습니까?` : 
+            `새로운 기록을 추가하시겠습니까?`
+          }
         </ModalText>
         <ButtonContainer>
           <YesButton onClick={onConfirm}>예</YesButton>
