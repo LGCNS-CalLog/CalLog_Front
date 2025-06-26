@@ -5,7 +5,7 @@ import BMICard from "../../components/Main/BMICard";
 import BMRCard from "../../components/Main/BMRCard";
 import MapCard from "../../components/Main/MapCard";
 import { FaCalendarAlt } from "react-icons/fa";
-
+import testImg from "../../assets/pagesImg/myPage.jpg";
 const Container = styled.div`
   font-family: sans-serif;
 `;
@@ -74,11 +74,11 @@ const CardsWrapper = styled.div`
 const MainPage = () => {
   const isAuthenticated = useSelector((state) => state.token.isAuthenticated);
   const sections = [
-    { id: "image1", title: "오늘의 추천" },
-    { id: "image2", title: "건강 분석" },
-    { id: "image3", title: "활동 기록" },
-    { id: "image4", title: "나의 목표" },
-    { id: "image5", title: "건강 뉴스" },
+    { id: "mainpage", title: "메인페이지" },
+    { id: "dietPage", title: "식단 켈린더" },
+    { id: "dayDietPage", title: "일일 식단" },
+    { id: "foodInfoPage", title: "음식 목록" },
+    { id: "myPage", title: "회원 페이지" },
   ];
 
   const [activeId, setActiveId] = useState("image1");
@@ -133,11 +133,28 @@ const MainPage = () => {
         </NavContainer>
       </StickyNavWrapper>
 
-      {sections.map(({ id, title }) => (
-        <Section key={id} id={id} ref={(el) => (sectionRefs.current[id] = el)}>
-          섹션 콘텐츠: {title}
-        </Section>
-      ))}
+      {sections.map(({ id, title }) => {
+        console.log(id, title);
+        const imgSrc = `/pagesImg/${id}.jpg`;
+        return (
+          <Section
+            key={id}
+            id={id}
+            ref={(el) => (sectionRefs.current[id] = el)}
+          >
+            <img
+              /* src={`../../assets/pagesImg/${id}.jpg`} */
+              src={imgSrc}
+              alt={title}
+              style={{
+                maxWidth: "100%",
+                borderRadius: "12px",
+                marginTop: "1rem",
+              }}
+            />
+          </Section>
+        );
+      })}
     </Container>
   );
 };

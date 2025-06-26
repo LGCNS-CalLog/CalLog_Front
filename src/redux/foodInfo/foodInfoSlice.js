@@ -52,8 +52,6 @@ const foodInfoSlice = createSlice({
       })
       .addCase(fetchFoodInfo.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log("payload:", action.payload);
-
         // 서버 반환에 맞게 필드명 수정
         const { content: foodList, totalElements: totalCount } = action.payload;
 

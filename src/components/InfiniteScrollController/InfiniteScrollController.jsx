@@ -94,6 +94,21 @@ const InfiniteScrollController = () => {
   };
 
   useEffect(() => {
+    // 컴포넌트 마운트 시 자동으로 데이터 불러오기
+    if (!currentKeywordFromStore) {
+      // 기본적인 fetchFoodData 호출
+      fetchFoodData(true); // 여기서 'true'는 키워드 검색이 시작되었다는 의미입니다.
+    }
+
+    // Cleanup 함수
+    return () => {
+      if (keywordFetchTimeoutRef.current) {
+        clearTimeout(keywordFetchTimeoutRef.current);
+      }
+    };
+  }, [currentKeywordFromStore]);
+
+  useEffect(() => {
     if (
       currentKeywordFromStore &&
       currentKeywordFromStore !== prevKeywordRef.current
